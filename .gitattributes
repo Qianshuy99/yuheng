@@ -1,0 +1,7 @@
+# 产物与源码都以 LF 入库并以 LF 签出：构建脚本写的是 LF，
+# 若让 Windows 签出成 CRLF，本地 npm run build 之后 dist/ 会永远显示有改动，
+# CI 的「dist 是否同步」检查也会误报。
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary

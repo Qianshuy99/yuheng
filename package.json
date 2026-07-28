@@ -1,0 +1,20 @@
+{
+  "name": "yuheng",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "玉衡主题助手 — 基于 Dubhe Core 引擎的油猴换肤引擎",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "assets": "python scripts/gen-assets.py",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/build.mjs --preview",
+    "shots": "node scripts/build.mjs --preview && node scripts/shots.mjs",
+    "check": "node scripts/build.mjs --preview && node scripts/selfcheck.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
+  }
+}

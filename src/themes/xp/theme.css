@@ -1,0 +1,658 @@
+/* ============ 0. XP 调色板 + 变量重映射 ============
+ * 全部挂在 html.yh-theme-xp-luna 下：主题卸载时 injector 会移掉这块 <style> 与该 class，
+ * 所以不能往裸 :root 上写变量（会在页面上留下痕迹，也可能撞到站点自己的同名变量）。
+ */
+html.yh-theme-xp-luna{
+	--xp-title-h:30px;
+	--xp-taskbar-h:34px;
+	--xp-frame:3px;
+	--xp-face:#ece9d8;          /* Luna 控件面 */
+	--xp-face-dark:#d4d0c8;     /* 经典灰 */
+	--xp-shadow:#aca899;
+	--xp-blue:#0054e3;
+	--xp-blue-dark:#003ec9;
+	--xp-sel:#316ac5;           /* 选中蓝 */
+	--xp-orange:#f5a623;
+	--xp-font:Tahoma,"Trebuchet MS","Microsoft YaHei","PingFang SC",sans-serif;
+}
+html.yh-theme-xp-luna{
+	/* Flarum 主题变量 → XP */
+	--primary-color:#0a246a;
+	--secondary-color:#316ac5;
+	--body-bg:#ffffff;
+	--body-bg-shaded:#f4f3ee;
+	--body-bg-light:#ffffff;
+	--body-bg-faded:rgba(255,255,255,.94);
+	--text-color:#111111;
+	--heading-color:#0a246a;
+	--link-color:#0433aa;
+	--muted-color:#5b5b52;
+	--muted-color-light:#7d7a6d;
+	--muted-more-color:#83817a;
+	--control-bg:var(--xp-face);
+	--control-bg-light:#f7f6f0;
+	--control-bg-shaded:#dcd8c8;
+	--control-color:#3b3b32;
+	--shadow-color:rgba(0,0,0,.35);
+	--header-bg:var(--xp-face);
+	--header-color:#111111;
+	--header-colored-color:#111111;
+	--header-colored-control-color:#111111;
+	--header-colored-control-bg:#f7f6f0;
+	--header-colored-control-bg-shaded:#ffffff;
+	--header-colored-control-bg-fadedin:#dcd8c8;
+	--hero-bg:#e6f0ff;
+	--hero-color:#0a246a;
+	--discussion-title-color:#0a246a;
+	--discussion-list-item-bg-hover:#e8f0fe;
+	--button-color:#111111;
+	--button-bg:var(--xp-face);
+	--button-bg-hover:#f6f4ea;
+	--button-bg-active:#dcd8c8;
+	--button-primary-color:#ffffff;
+	--button-primary-bg:#3768c8;
+	--button-primary-bg-hover:#4a7cdc;
+	--button-primary-bg-active:#2b56ab;
+	--overlay-bg:rgba(10,36,106,.55);
+	--code-bg:#fdfdf4;
+	--code-color:#1c1c14;
+	--border-radius:0px;
+	--zindex-header:1000;
+}
+/* ============ 1. 桌面：壁纸 + 应用窗口 ============
+ * 关键约束：Flarum 帖子流依赖 window 滚动（Scrubber、滚动加载），
+ * 所以窗口客户区不自己滚动 —— 文档照常滚动，窗口 chrome 用 fixed 贴在顶部。
+ */
+html.yh-theme-xp-luna{
+	--xp-inset-x:14px;
+	--xp-inset-top:12px;
+	--xp-menubar-h:23px;
+	--xp-toolbar-h:40px;
+	--xp-chrome-h:calc(var(--xp-title-h) + var(--xp-menubar-h) + var(--xp-toolbar-h));
+}
+html.yh-theme-xp-luna.xp-max{--xp-inset-x:0px;--xp-inset-top:0px;}
+/* Flarum 用 --header-height 定位 sticky 侧栏，指到 chrome 底部 */
+html.yh-theme-xp-luna{
+	--header-height:calc(var(--xp-inset-top) + var(--xp-chrome-h) + 6px);
+	--header-height-phone:calc(var(--xp-inset-top) + var(--xp-title-h) + var(--xp-toolbar-h) + 6px);
+}
+html.yh-theme-xp-luna body{
+	font-family:var(--xp-font);
+	font-size:12px;
+	background:#5a7edc;
+	padding-bottom:var(--xp-taskbar-h);
+	overflow-x:hidden;
+}
+html.yh-theme-xp-luna body::before{
+	content:"";position:fixed;inset:0 0 var(--xp-taskbar-h) 0;z-index:0;pointer-events:none;
+	background-repeat:no-repeat;background-size:cover;background-position:center;
+}
+/* Bliss：真图，由 index.js 通过 --xp-bliss 变量注入（data URI 随主题包走，
+ * 这样导出的包在别人机器上也有背景，不依赖 @resource）。
+ * 变量缺失时退回纯 CSS 近似，不会变成空白。 */
+html.yh-theme-xp-luna.xp-wall-bliss body::before{
+	background-image:
+		var(--xp-bliss,none),
+		radial-gradient(120% 62% at 18% 108%,#7cb342 0 42%,#5c9a2f 42% 70%,transparent 70%),
+		radial-gradient(90% 46% at 88% 112%,#8bc34a 0 55%,transparent 55%),
+		linear-gradient(180deg,#1a4fa0 0,#3f7fd4 34%,#8fc0ec 62%,#cfe4f5 78%,#dff0d0 100%);
+}
+html.yh-theme-xp-luna.xp-wall-luna body::before{
+	background-image:
+		radial-gradient(140% 90% at 50% 120%,#1b3d8f 0 40%,transparent 40%),
+		linear-gradient(160deg,#0b2a6b 0,#12419e 45%,#2b6cb0 100%);
+}
+html.yh-theme-xp-luna.xp-wall-plain body::before{background-image:linear-gradient(180deg,#3a6ea5,#3a6ea5);}
+
+/* .App 变成一扇 XP 窗口（高度随内容延伸） */
+html.yh-theme-xp-luna #app.App{
+	position:relative!important;
+	z-index:2;
+	margin:var(--xp-inset-top) var(--xp-inset-x) 0;
+	padding:calc(var(--xp-chrome-h) + 8px) 0 24px!important;
+	min-height:calc(100vh - var(--xp-taskbar-h) - var(--xp-inset-top));
+	box-sizing:border-box;
+	background:#fff;
+	border:var(--xp-frame) solid #0f5fd4;border-top:0;
+	box-shadow:0 0 0 1px #0a246a,0 10px 34px rgba(0,0,0,.45);
+}
+/* 最小化：窗口与 chrome 全部隐藏，只剩桌面 */
+html.yh-theme-xp-luna.xp-min #app.App,
+html.yh-theme-xp-luna.xp-min .xp-titlebar,
+html.yh-theme-xp-luna.xp-min .xp-menubar,
+html.yh-theme-xp-luna.xp-min .App-header,
+html.yh-theme-xp-luna.xp-min .App-composer{display:none!important;}
+html.yh-theme-xp-luna.xp-min body{overflow:hidden;}
+html.yh-theme-xp-luna.xp-min .xp-desktop{display:flex;}
+/* 窗口边框内侧高光 */
+html.yh-theme-xp-luna #app.App::before{
+	content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+	box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
+}
+
+/* ============ 2. 窗口 chrome：标题栏 + 菜单栏（fixed，贴在窗口顶部） ============ */
+.xp-chrome{
+	position:fixed;z-index:1200;
+	top:var(--xp-inset-top);
+	left:var(--xp-inset-x);right:var(--xp-inset-x);
+	box-sizing:border-box;
+	border:var(--xp-frame) solid #0f5fd4;border-bottom:0;
+	border-radius:8px 8px 0 0;
+	background:var(--xp-face);
+	box-shadow:0 0 0 1px #0a246a;
+	overflow:hidden;
+}
+html.yh-theme-xp-luna.xp-max .xp-chrome{border-radius:0;border-left:0;border-right:0;}
+.xp-titlebar{
+	height:var(--xp-title-h);
+	display:flex;align-items:center;gap:6px;padding:0 4px 0 6px;
+	background:linear-gradient(180deg,#0f6ee8 0,#0d5ede 8%,#0a4fd0 42%,#0b57d6 78%,#1b7ff2 100%);
+	color:#fff;font:700 12px/1 var(--xp-font);
+	text-shadow:1px 1px 1px rgba(0,0,0,.55);
+	cursor:default;user-select:none;
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.25);
+}
+.xp-titlebar-icon{width:16px;height:16px;flex:0 0 auto;border-radius:2px;object-fit:contain;background:#fff;}
+.xp-titlebar-text{
+	flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+	font-size:12px;letter-spacing:.2px;
+}
+.xp-titlebar-buttons{display:flex;gap:2px;flex:0 0 auto;}
+.xp-tbtn{
+	width:22px;height:21px;padding:0;border:1px solid rgba(255,255,255,.75);
+	border-radius:3px;cursor:pointer;
+	background:linear-gradient(180deg,#4a95f5 0,#1e6ae0 48%,#1550b8 100%);
+	color:#fff;font:700 12px/1 var(--xp-font);
+	display:grid;place-items:center;
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.55);
+}
+.xp-tbtn:hover{filter:brightness(1.18);}
+.xp-tbtn:active{filter:brightness(.86);}
+.xp-tbtn--close{background:linear-gradient(180deg,#f08a72 0,#d64d2a 48%,#a52c10 100%);}
+.xp-tbtn svg{width:10px;height:10px;fill:none;stroke:#fff;stroke-width:1.6;}
+
+/* ============ 3. 菜单栏（伪 IE / 资源管理器菜单） ============ */
+.xp-menubar{
+	height:var(--xp-menubar-h);
+	display:flex;align-items:center;gap:2px;
+	padding:0 4px;background:var(--xp-face);
+	box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 var(--xp-shadow);
+	font:12px/1 var(--xp-font);color:#111;
+	user-select:none;
+}
+.xp-menubar-item{
+	padding:3px 8px;border:1px solid transparent;border-radius:2px;
+	background:transparent;font:12px/1 var(--xp-font);color:#111;cursor:default;
+}
+.xp-menubar-item:hover{background:var(--xp-sel);color:#fff;}
+.xp-menubar-item[data-xp-menu]{cursor:pointer;}
+.xp-menubar-spacer{flex:1 1 auto;}
+.xp-menubar-clock{padding:3px 8px;color:#4a4a40;font-variant-numeric:tabular-nums;}
+@media (max-width:767.98px){.xp-menubar{display:none;}}
+
+/* ============ 4. Flarum 头部 → 窗口工具栏（fixed，紧贴菜单栏下方） ============ */
+html.yh-theme-xp-luna #app-navigation{display:none!important;}
+html.yh-theme-xp-luna .App-drawer{
+	position:static!important;width:auto!important;
+	transform:none!important;visibility:visible!important;
+	background:transparent!important;box-shadow:none!important;z-index:auto!important;
+}
+html.yh-theme-xp-luna .App-header{
+	position:fixed!important;z-index:1190;
+	top:calc(var(--xp-inset-top) + var(--xp-title-h) + var(--xp-menubar-h));
+	left:calc(var(--xp-inset-x) + var(--xp-frame));
+	right:calc(var(--xp-inset-x) + var(--xp-frame));
+	height:var(--xp-toolbar-h)!important;
+	padding:3px 6px!important;border:0!important;box-sizing:border-box;
+	background:linear-gradient(180deg,#fdfdfa 0,#ece9d8 58%,#e3dfcc 100%)!important;
+	box-shadow:inset 0 1px 0 #fff,0 1px 0 var(--xp-shadow)!important;
+	color:#111!important;
+}
+@media (max-width:767.98px){
+	html.yh-theme-xp-luna .App-header{top:calc(var(--xp-inset-top) + var(--xp-title-h));}
+}
+html.yh-theme-xp-luna .App-header .container{
+	width:auto!important;max-width:none!important;padding:0!important;height:100%;
+	display:flex;align-items:center;gap:8px;flex-wrap:nowrap;overflow:hidden;
+}
+html.yh-theme-xp-luna .Header-title{float:none;margin:0 6px 0 0;padding:0;line-height:1;}
+html.yh-theme-xp-luna .Header-logo{max-height:22px;}
+html.yh-theme-xp-luna .Header-primary{float:none;flex:1 1 auto;min-width:0;}
+html.yh-theme-xp-luna .Header-secondary{float:none;margin-left:auto;}
+html.yh-theme-xp-luna .App-header a,html.yh-theme-xp-luna .App-header .Button{color:#111!important;text-shadow:none!important;}
+html.yh-theme-xp-luna .App-header .Button,html.yh-theme-xp-luna .App-header .Button:hover{background:transparent!important;}
+html.yh-theme-xp-luna .Header-controls>li{padding:0 2px;}
+
+/* ============ 5. 内容区 = 窗口客户区 ============ */
+html.yh-theme-xp-luna .App-content{
+	min-height:0!important;height:auto!important;
+	margin:0!important;padding:0 0 12px!important;
+	border:0!important;
+	background:#fff!important;
+	box-shadow:inset 1px 1px 0 #d8d4c4;
+}
+html.yh-theme-xp-luna .App-content .container{padding-left:16px!important;padding-right:16px!important;max-width:1180px!important;}
+html.yh-theme-xp-luna .Hero{
+	margin:0 0 12px!important;
+	background:linear-gradient(180deg,#0d5ede,#1a7ff0)!important;color:#fff!important;
+	border-bottom:1px solid #0a246a;
+}
+html.yh-theme-xp-luna .Hero h1,html.yh-theme-xp-luna .Hero-subtitle{color:#fff!important;text-shadow:1px 1px 2px rgba(0,0,0,.45);}
+html.yh-theme-xp-luna .Hero .container{padding-top:16px!important;padding-bottom:14px!important;}
+/* 左侧导航 → XP 资源管理器“任务窗格” */
+html.yh-theme-xp-luna .sideNav{
+	padding:10px!important;margin-right:18px!important;
+	background:linear-gradient(180deg,#f4f8fe,#dfeaf9);
+	border:1px solid #b6c8e0;
+	box-shadow:inset 0 1px 0 #fff;
+}
+@media (min-width:992px){
+	html.yh-theme-xp-luna .sideNav{width:190px;min-width:190px;}
+}
+html.yh-theme-xp-luna .sideNav .Dropdown-menu>li>a{
+	padding:5px 8px 5px 26px!important;color:#0a3d8f!important;border-radius:2px;
+}
+html.yh-theme-xp-luna .sideNav .Dropdown-menu>li>a:hover{background:#c9dcf5!important;color:#062a66!important;}
+html.yh-theme-xp-luna .sideNav .Dropdown-menu>li.active>a{background:#316ac5!important;color:#fff!important;font-weight:700;}
+html.yh-theme-xp-luna .sideNav:after{display:none;}
+html.yh-theme-xp-luna .sideNavOffset{margin-top:12px!important;}
+
+/* ============ 6. 经典控件：按钮 / 输入框 / 下拉 ============ */
+html.yh-theme-xp-luna .Button{
+	border-radius:3px!important;
+	border:1px solid #7b7565!important;
+	background:linear-gradient(180deg,#fefefc 0,#f0eee1 42%,#e2dece 60%,#eceada 100%)!important;
+	color:#111!important;font-family:var(--xp-font);
+	box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(0,0,0,.06)!important;
+}
+html.yh-theme-xp-luna .Button:hover{border-color:#e7a13a!important;background:linear-gradient(180deg,#fffdf3 0,#fdf3d8 45%,#f8e6b4 100%)!important;}
+html.yh-theme-xp-luna .Button:active,html.yh-theme-xp-luna .Button.active,html.yh-theme-xp-luna .open>.Dropdown-toggle.Button{
+	background:linear-gradient(180deg,#dcd8c8 0,#e8e5d6 100%)!important;
+	box-shadow:inset 1px 1px 2px rgba(0,0,0,.28)!important;
+}
+html.yh-theme-xp-luna .Button--primary{
+	border-color:#20458f!important;
+	background:linear-gradient(180deg,#7fb3f7 0,#3c79dd 45%,#2456b4 100%)!important;
+	color:#fff!important;text-shadow:0 1px 1px rgba(0,0,0,.35);
+}
+html.yh-theme-xp-luna .Button--primary:hover{background:linear-gradient(180deg,#9cc6fb 0,#4b8bea 45%,#2c62c6 100%)!important;}
+html.yh-theme-xp-luna .Button--flat{border-color:transparent!important;background:transparent!important;box-shadow:none!important;}
+html.yh-theme-xp-luna .Button--flat:hover{border-color:#7b7565!important;background:linear-gradient(180deg,#fffdf3,#f8e6b4)!important;}
+
+html.yh-theme-xp-luna .FormControl,html.yh-theme-xp-luna input[type=text],html.yh-theme-xp-luna input[type=search],
+html.yh-theme-xp-luna input[type=password],html.yh-theme-xp-luna input[type=email],html.yh-theme-xp-luna textarea,html.yh-theme-xp-luna select{
+	border-radius:0!important;
+	border:1px solid #7f9db9!important;
+	background:#fff!important;color:#111!important;
+	box-shadow:inset 1px 1px 1px rgba(0,0,0,.14)!important;
+	font-family:var(--xp-font);
+}
+html.yh-theme-xp-luna .FormControl:focus,html.yh-theme-xp-luna textarea:focus,html.yh-theme-xp-luna input:focus{
+	border-color:var(--xp-orange)!important;outline:none!important;
+	box-shadow:inset 1px 1px 1px rgba(0,0,0,.14),0 0 0 2px rgba(245,166,35,.35)!important;
+}
+html.yh-theme-xp-luna .Dropdown-menu{
+	border-radius:0!important;border:1px solid #7b7565!important;
+	background:var(--xp-face)!important;
+	box-shadow:2px 2px 5px rgba(0,0,0,.35)!important;padding:2px!important;
+}
+html.yh-theme-xp-luna .Dropdown-menu>li>a,html.yh-theme-xp-luna .Dropdown-menu>li>button{
+	border-radius:0!important;color:#111!important;font-family:var(--xp-font);
+}
+html.yh-theme-xp-luna .Dropdown-menu>li>a:hover,html.yh-theme-xp-luna .Dropdown-menu>li>button:hover{
+	background:var(--xp-sel)!important;color:#fff!important;
+}
+html.yh-theme-xp-luna .Dropdown-header{color:#0a246a!important;font-weight:700;}
+html.yh-theme-xp-luna .Dropdown-separator{background:var(--xp-shadow)!important;}
+/* ============ 7. 列表 / 帖子 = 资源管理器条目与分组框 ============ */
+html.yh-theme-xp-luna .DiscussionList-discussions{
+	border:1px solid #b6b2a2;background:#fff;
+	box-shadow:inset 1px 1px 0 #fff;
+}
+html.yh-theme-xp-luna .DiscussionListItem{border-bottom:1px solid #ece9d8;}
+html.yh-theme-xp-luna .DiscussionListItem:nth-child(even){background:#f7f7f2;}
+html.yh-theme-xp-luna .DiscussionListItem:hover .DiscussionListItem-content{background:#e8f0fe;}
+html.yh-theme-xp-luna .DiscussionListItem-title{color:#0a246a!important;font-weight:700;}
+html.yh-theme-xp-luna .DiscussionListItem-title:hover{text-decoration:underline;}
+html.yh-theme-xp-luna .Avatar{border-radius:2px!important;box-shadow:0 0 0 1px #7b7565;}
+html.yh-theme-xp-luna .Avatar img{border-radius:2px!important;}
+html.yh-theme-xp-luna .Badge{border-radius:2px!important;box-shadow:0 0 0 1px rgba(0,0,0,.25);}
+
+html.yh-theme-xp-luna .PostStream-item{
+	border:1px solid #b6b2a2;background:#fff;margin-bottom:10px;
+	padding:10px 12px;box-shadow:1px 1px 0 #fff inset;
+}
+html.yh-theme-xp-luna .Post-header{
+	margin:-10px -12px 10px;padding:5px 10px;
+	background:linear-gradient(180deg,#fdfdfa,#e8e5d4);
+	border-bottom:1px solid var(--xp-shadow);color:#3b3b32!important;
+}
+html.yh-theme-xp-luna .PostUser-name a{color:#0a246a!important;font-weight:700;}
+html.yh-theme-xp-luna .Post-body blockquote{
+	background:#fdfdf4!important;border:1px solid #cfcbb8!important;
+	border-left:4px solid var(--xp-sel)!important;border-radius:0!important;color:#3b3b32!important;
+}
+html.yh-theme-xp-luna .Post-body pre,html.yh-theme-xp-luna .Post-body code{
+	border-radius:0!important;border:1px solid #cfcbb8!important;
+	font-family:"Lucida Console","Courier New",monospace!important;
+}
+html.yh-theme-xp-luna .ReplyPlaceholder{border:1px solid #b6b2a2;background:var(--xp-face);}
+
+html.yh-theme-xp-luna .PostStreamScrubber .Dropdown-menu,
+html.yh-theme-xp-luna .sideNav .Dropdown--select .Dropdown-menu{
+	border:0!important;background:none!important;box-shadow:none!important;padding:0!important;
+}
+html.yh-theme-xp-luna .Scrubber-bar{background:linear-gradient(180deg,#7fb3f7,#2456b4)!important;}
+html.yh-theme-xp-luna .Scrubber-handle{color:#0a246a;}
+/* 讨论页右侧导航（Scrubber + 回复按钮）也做成任务窗格 */
+html.yh-theme-xp-luna .DiscussionPage-nav{
+	border-bottom:0!important;
+	background:linear-gradient(180deg,#f4f8fe,#dfeaf9);
+	border:1px solid #b6c8e0;box-shadow:inset 0 1px 0 #fff;
+	padding:10px 10px 12px!important;margin:0!important;
+}
+html.yh-theme-xp-luna .DiscussionPage-nav .Scrubber a{color:#0a3d8f!important;}
+html.yh-theme-xp-luna .DiscussionPage-nav .Scrubber-scrollbar{
+	background:repeating-conic-gradient(#eef3fb 0 25%,#ffffff 0 50%) 0 0/2px 2px;
+	border:1px solid #b6c8e0;margin:8px 0!important;
+}
+html.yh-theme-xp-luna .DiscussionHero{
+	background:linear-gradient(180deg,#fdfdfa,#e8e5d4)!important;
+	border:1px solid #b6b2a2;margin-bottom:12px;padding:8px 12px!important;
+}
+html.yh-theme-xp-luna .DiscussionHero-title{color:#0a246a!important;font-size:18px!important;}
+
+/* ============ 8. 弹窗 / 提示 = XP 对话框 ============ */
+html.yh-theme-xp-luna .Modal-content{
+	border-radius:8px 8px 3px 3px!important;
+	border:var(--xp-frame) solid #0f5fd4;border-top:none;
+	box-shadow:0 0 0 1px #0a246a,0 12px 32px rgba(0,0,0,.45)!important;
+	background:var(--xp-face)!important;overflow:hidden;
+}
+html.yh-theme-xp-luna .Modal-header{
+	background:linear-gradient(180deg,#0f6ee8,#0a4fd0 52%,#1b7ff2)!important;
+	border:0!important;padding:6px 10px!important;
+}
+html.yh-theme-xp-luna .Modal-header h3{color:#fff!important;font:700 12px/1.4 var(--xp-font)!important;text-shadow:1px 1px 1px rgba(0,0,0,.5);}
+html.yh-theme-xp-luna .Modal-close .Button{
+	background:linear-gradient(180deg,#f08a72,#a52c10)!important;
+	border:1px solid rgba(255,255,255,.75)!important;color:#fff!important;border-radius:3px!important;
+}
+html.yh-theme-xp-luna .Modal-body{background:var(--xp-face)!important;color:#111!important;}
+html.yh-theme-xp-luna .Modal-footer{background:var(--xp-face)!important;}
+html.yh-theme-xp-luna .Alert{border-radius:0!important;border:1px solid #b6b2a2;}
+html.yh-theme-xp-luna .Composer{
+	border:var(--xp-frame) solid #0f5fd4;border-top:none;border-radius:8px 8px 0 0;
+	box-shadow:0 0 0 1px #0a246a,0 -6px 24px rgba(0,0,0,.35)!important;
+	background:var(--xp-face)!important;
+}
+/* 回复框顶部那条标题当成 XP 标题栏画，跟主窗口保持一套语言 */
+html.yh-theme-xp-luna .Composer-header{
+	margin:0 -3px 8px!important;padding:5px 10px!important;
+	background:linear-gradient(180deg,#0a5fd4 0,#1573ef 8%,#0e60d8 42%,#0a4fb8 92%,#3f8ff5 100%)!important;
+	color:#fff!important;font:700 12px/1.5 var(--xp-font)!important;
+	text-shadow:1px 1px 1px rgba(0,0,0,.5);border-radius:5px 5px 0 0;
+}
+html.yh-theme-xp-luna .Composer-header a,html.yh-theme-xp-luna .Composer-header h3{color:#fff!important;}
+html.yh-theme-xp-luna .Composer-handle{background:transparent!important;}
+/* ============ 9. XP 滚动条 ============
+ * 注意：文档滚动条属于 html 自己，必须用 html.yh-theme-xp-luna::-webkit-scrollbar（无空格），
+ * 带空格的后代选择器只会命中内部元素的滚动条。
+ */
+html.yh-theme-xp-luna,html.yh-theme-xp-luna *{scrollbar-color:#c7c3b4 #f1efe2;}
+html.yh-theme-xp-luna::-webkit-scrollbar,html.yh-theme-xp-luna ::-webkit-scrollbar{width:17px;height:17px;}
+html.yh-theme-xp-luna::-webkit-scrollbar-track,html.yh-theme-xp-luna ::-webkit-scrollbar-track{
+	background:repeating-conic-gradient(#f1efe2 0 25%,#ffffff 0 50%) 0 0/2px 2px;
+	border-left:1px solid #d8d4c4;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-thumb,html.yh-theme-xp-luna ::-webkit-scrollbar-thumb{
+	background:linear-gradient(90deg,#fff 0,#ece9d8 22%,#d9d5c4 78%,#bdb9a8 100%);
+	border:1px solid #7b7565;box-shadow:inset 1px 1px 0 #fff;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-thumb:hover,html.yh-theme-xp-luna ::-webkit-scrollbar-thumb:hover{
+	background:linear-gradient(90deg,#fff,#f7e9c4 45%,#e8cf92);
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-button:single-button,
+html.yh-theme-xp-luna ::-webkit-scrollbar-button:single-button{
+	display:block;height:17px;width:17px;
+	border:1px solid #7b7565;box-shadow:inset 1px 1px 0 #fff;
+	background-repeat:no-repeat;
+	background-image:linear-gradient(180deg,#fff,#ece9d8 40%,#d9d5c4);
+	background-size:100% 100%;background-position:center;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-button:single-button:vertical:decrement,
+html.yh-theme-xp-luna ::-webkit-scrollbar-button:single-button:vertical:decrement{
+	background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='7' height='5'><path d='M3.5 0L7 5H0z' fill='%23111'/></svg>"),linear-gradient(180deg,#fff,#ece9d8 40%,#d9d5c4);
+	background-size:7px 5px,100% 100%;background-position:center,center;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-button:single-button:vertical:increment,
+html.yh-theme-xp-luna ::-webkit-scrollbar-button:single-button:vertical:increment{
+	background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='7' height='5'><path d='M3.5 5L0 0h7z' fill='%23111'/></svg>"),linear-gradient(180deg,#fff,#ece9d8 40%,#d9d5c4);
+	background-size:7px 5px,100% 100%;background-position:center,center;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-button:single-button:horizontal:decrement,
+html.yh-theme-xp-luna ::-webkit-scrollbar-button:single-button:horizontal:decrement{
+	background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='7'><path d='M0 3.5L5 0v7z' fill='%23111'/></svg>"),linear-gradient(180deg,#fff,#ece9d8 40%,#d9d5c4);
+	background-size:5px 7px,100% 100%;background-position:center,center;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-button:single-button:horizontal:increment,
+html.yh-theme-xp-luna ::-webkit-scrollbar-button:single-button:horizontal:increment{
+	background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='5' height='7'><path d='M5 3.5L0 7V0z' fill='%23111'/></svg>"),linear-gradient(180deg,#fff,#ece9d8 40%,#d9d5c4);
+	background-size:5px 7px,100% 100%;background-position:center,center;
+}
+html.yh-theme-xp-luna::-webkit-scrollbar-corner,html.yh-theme-xp-luna ::-webkit-scrollbar-corner{background:#ece9d8;}
+
+/* ============ 10. 任务栏 + 开始菜单 ============ */
+.xp-taskbar{
+	position:fixed;left:0;right:0;bottom:0;height:var(--xp-taskbar-h);
+	z-index:2147483000;
+	display:flex;align-items:stretch;
+	font:12px/1 var(--xp-font);color:#fff;user-select:none;
+	background:linear-gradient(180deg,#3f8cf3 0,#2a6fdc 8%,#1c56c4 44%,#1e5ecb 88%,#3b86ef 100%);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 -1px 4px rgba(0,0,0,.4);
+}
+.xp-start{
+	flex:0 0 auto;display:flex;align-items:center;gap:6px;
+	padding:0 20px 2px 10px;border:none;cursor:pointer;
+	background:linear-gradient(180deg,#63c05a 0,#4aa63f 42%,#307a26 100%);
+	color:#fff;font:italic 700 15px/1 var(--xp-font);
+	text-shadow:1px 1px 2px rgba(0,0,0,.55);
+	border-radius:0 12px 12px 0;
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset -2px 0 3px rgba(0,0,0,.2);
+}
+.xp-start:hover{filter:brightness(1.12);}
+.xp-start.xp-open{filter:brightness(.9);box-shadow:inset 2px 2px 4px rgba(0,0,0,.35);}
+.xp-start-flag{
+	width:19px;height:19px;flex:0 0 auto;border-radius:3px;
+	background:
+		linear-gradient(135deg,transparent 46%,rgba(255,255,255,.7) 46% 54%,transparent 54%),
+		conic-gradient(from 0deg at 50% 50%,#f14a3a 0 25%,#66c05a 0 50%,#f5c542 0 75%,#3b86ef 0 100%);
+	box-shadow:0 0 0 1px rgba(255,255,255,.6);
+}
+.xp-tasks{flex:1 1 auto;display:flex;align-items:center;gap:4px;padding:3px 6px;min-width:0;overflow:hidden;}
+.xp-task{
+	max-width:190px;min-width:0;display:flex;align-items:center;gap:5px;
+	padding:4px 9px;border:1px solid #1b4fae;border-radius:3px;cursor:pointer;
+	background:linear-gradient(180deg,#4e93ef 0,#2f6fd8 48%,#2560c4 100%);
+	color:#fff;font:12px/1 var(--xp-font);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+	white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.xp-task:hover{filter:brightness(1.15);}
+.xp-task.xp-active{background:linear-gradient(180deg,#1b4fae 0,#2560c4 60%,#3475d8 100%);box-shadow:inset 1px 1px 3px rgba(0,0,0,.4);}
+.xp-task-label{overflow:hidden;text-overflow:ellipsis;}
+.xp-tray{
+	flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 10px;
+	background:linear-gradient(180deg,#22a6e8 0,#1786d4 22%,#1272c4 60%,#2a97e0 100%);
+	box-shadow:inset 2px 0 3px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.4);
+	font-variant-numeric:tabular-nums;
+}
+.xp-tray-icon{width:14px;height:14px;display:grid;place-items:center;cursor:pointer;opacity:.92;}
+.xp-tray-icon:hover{opacity:1;}
+.xp-clock{text-shadow:1px 1px 1px rgba(0,0,0,.45);cursor:default;}
+/* 开始菜单 */
+.xp-startmenu{
+	position:fixed;left:2px;bottom:var(--xp-taskbar-h);width:340px;
+	z-index:2147483001;display:none;
+	border:1px solid #0a246a;border-radius:8px 8px 0 0;overflow:hidden;
+	background:#fff;box-shadow:0 -6px 26px rgba(0,0,0,.45);
+	font:12px/1.4 var(--xp-font);color:#111;
+}
+.xp-startmenu.xp-open{display:block;animation:xp-pop .12s ease-out;}
+@keyframes xp-pop{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.xp-startmenu-head{
+	display:flex;align-items:center;gap:9px;padding:7px 11px;
+	background:linear-gradient(180deg,#1f7ceb,#0a4fd0);
+	color:#fff;font-weight:700;text-shadow:1px 1px 2px rgba(0,0,0,.5);
+	border-bottom:2px solid #ffb43a;
+}
+.xp-startmenu-head img,.xp-startmenu-avatar{
+	width:34px;height:34px;border-radius:3px;border:2px solid #fff;background:#ece9d8;object-fit:cover;
+	display:grid;place-items:center;color:#0a246a;font-weight:700;font-size:15px;text-shadow:none;
+}
+.xp-startmenu-body{display:flex;background:#fff;}
+.xp-startmenu-col{flex:1 1 50%;padding:6px;display:flex;flex-direction:column;gap:1px;min-width:0;}
+.xp-startmenu-col--right{background:#d3e5fa;box-shadow:inset 1px 0 0 #b6d3f4;}
+.xp-mi{
+	display:flex;align-items:center;gap:8px;padding:6px 8px;
+	border:0;background:transparent;text-align:left;cursor:pointer;
+	font:12px/1.3 var(--xp-font);color:#111;border-radius:2px;
+	text-decoration:none;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.xp-mi:hover{background:var(--xp-sel);color:#fff;text-decoration:none;}
+.xp-mi-icon{
+	width:20px;height:20px;flex:0 0 auto;display:grid;place-items:center;
+	border-radius:3px;background:linear-gradient(180deg,#fdfdfa,#d9d5c4);
+	box-shadow:0 0 0 1px #7b7565;font-size:11px;color:#0a246a;
+}
+.xp-mi:hover .xp-mi-icon{color:#0a246a;}
+.xp-mi-sep{height:1px;background:#c9c5b6;margin:4px 6px;}
+.xp-startmenu-foot{
+	display:flex;justify-content:flex-end;gap:8px;padding:6px 10px;
+	background:linear-gradient(180deg,#3f8cf3,#1c56c4);
+	border-top:1px solid #0a246a;
+}
+.xp-startmenu-foot .xp-mi{color:#fff;}
+.xp-startmenu-foot .xp-mi:hover{background:rgba(255,255,255,.2);}
+.xp-startmenu-title{font-size:11px;color:#0a246a;font-weight:700;padding:4px 8px 2px;}
+
+/* 桌面右键菜单 */
+.xp-ctx{
+	position:fixed;z-index:2147483002;display:none;min-width:180px;padding:2px;
+	background:var(--xp-face);border:1px solid #7b7565;
+	box-shadow:2px 2px 6px rgba(0,0,0,.4);font:12px/1.4 var(--xp-font);
+}
+.xp-ctx.xp-open{display:block;}
+/* ============ 11. 桌面图标（窗口最小化后可见） ============ */
+.xp-desktop{
+	position:fixed;left:0;top:0;bottom:var(--xp-taskbar-h);width:104px;z-index:1;
+	flex-direction:column;gap:6px;padding:10px 6px;
+	font:11px/1.3 var(--xp-font);
+}
+html.yh-theme-xp-luna.xp-min .xp-desktop{display:flex;}
+.xp-dicon{
+	display:flex;flex-direction:column;align-items:center;gap:3px;
+	padding:4px 2px;border:1px solid transparent;cursor:pointer;background:transparent;
+	color:#fff;text-shadow:1px 1px 2px rgba(0,0,0,.85);text-align:center;text-decoration:none;
+}
+.xp-dicon:hover{border-color:rgba(255,255,255,.35);background:rgba(49,106,197,.35);text-decoration:none;color:#fff;}
+.xp-dicon-glyph{
+	width:32px;height:32px;display:grid;place-items:center;font-size:15px;
+	border-radius:4px;color:#0a246a;text-shadow:none;
+	background:linear-gradient(180deg,#fdfdfa,#cfcbb8);
+	box-shadow:0 0 0 1px #0a246a,inset 0 1px 0 #fff;
+}
+
+/* ============ 12. 开机动画 ============ */
+.xp-boot{
+	position:fixed;inset:0;z-index:2147483600;background:#000;
+	display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;
+	font:13px/1.4 var(--xp-font);color:#fff;
+	animation:xp-boot-out .5s ease-in forwards;
+	animation-delay:2.4s;
+}
+@keyframes xp-boot-out{to{opacity:0;visibility:hidden;}}
+.xp-boot-logo{display:flex;align-items:center;gap:12px;}
+.xp-boot-flag{
+	width:44px;height:44px;border-radius:6px;
+	background:
+		linear-gradient(135deg,transparent 46%,rgba(255,255,255,.75) 46% 54%,transparent 54%),
+		conic-gradient(from 0deg at 50% 50%,#f14a3a 0 25%,#66c05a 0 50%,#f5c542 0 75%,#3b86ef 0 100%);
+	box-shadow:0 0 18px rgba(120,180,255,.6);
+	transform:perspective(200px) rotateY(-18deg);
+}
+.xp-boot-word{font:400 30px/1 var(--xp-font);letter-spacing:.5px;}
+.xp-boot-word b{font-weight:700;}
+.xp-boot-word small{display:block;font-size:12px;color:#ffb43a;letter-spacing:3px;margin-top:5px;}
+.xp-boot-bar{
+	width:190px;height:14px;border:2px solid #9fb6d8;border-radius:8px;
+	overflow:hidden;position:relative;background:#04102b;
+}
+.xp-boot-bar::before{
+	content:"";position:absolute;top:2px;bottom:2px;left:0;width:52px;
+	background:linear-gradient(90deg,#0a2e6e 0,#3f8cf3 32%,#8fc4ff 50%,#3f8cf3 68%,#0a2e6e 100%);
+	border-radius:6px;
+	animation:xp-boot-slide 1.5s linear infinite;
+}
+@keyframes xp-boot-slide{from{transform:translateX(-56px);}to{transform:translateX(190px);}}
+.xp-boot-hint{font-size:11px;color:#8fa8c8;letter-spacing:1px;}
+html.xp-booting{overflow:hidden;}
+
+/* ============ 13. 收尾修正 ============ */
+html.yh-theme-xp-luna .App-composer{z-index:1500;}
+html.yh-theme-xp-luna .AlertManager{z-index:1600;}
+html.yh-theme-xp-luna .ModalManager,html.yh-theme-xp-luna .Modal-backdrop{z-index:1700;}
+/* 站点自带的“切换站点”悬浮胶囊：fixed 在右下角、z-index 99999，正好压在任务栏上。
+ * 它挂在 closed shadow root 里，外部 CSS 进不去（也不能靠 transform 造包含块，
+ * 那会把里面 inset:0 的弹窗压成 0×0）。所以整个藏掉，功能改由开始菜单/查看菜单提供。 */
+html.yh-theme-xp-luna #site-switcher-container{display:none!important;}
+html.yh-theme-xp-luna a{text-decoration:none;}
+html.yh-theme-xp-luna .App-content a:hover{text-decoration:underline;}
+html.yh-theme-xp-luna .sideNav{padding:12px 0;}
+html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
+/* 桌面图标默认藏起来，只在最小化时露出 */
+.xp-desktop{display:none;}
+@media (max-width:767.98px){
+	html.yh-theme-xp-luna{--xp-inset-x:0px;--xp-inset-top:0px;}
+	html.yh-theme-xp-luna.xp-min .xp-desktop{display:none;}
+	.xp-startmenu{width:auto;right:2px;}
+}
+@media (prefers-reduced-motion:reduce){
+	.xp-boot,.xp-boot-bar::before,.xp-startmenu.xp-open{animation-duration:.01s;}
+}
+/* ============ 14. 自绘 XP 对话框（关于 / 提示 / 关机） ============ */
+.xp-dlg-mask{
+	position:fixed;inset:0;z-index:2147483300;display:grid;place-items:center;
+	background:rgba(10,36,106,.35);font:12px/1.5 var(--xp-font);
+}
+.xp-dlg{
+	width:min(400px,92vw);
+	border:var(--xp-frame) solid #0f5fd4;border-radius:8px 8px 3px 3px;
+	background:var(--xp-face);box-shadow:0 0 0 1px #0a246a,0 14px 36px rgba(0,0,0,.45);
+	overflow:hidden;
+}
+.xp-dlg-title{
+	height:var(--xp-title-h);display:flex;align-items:center;gap:6px;padding:0 4px 0 8px;
+	background:linear-gradient(180deg,#0f6ee8,#0a4fd0 52%,#1b7ff2);
+	color:#fff;font-weight:700;text-shadow:1px 1px 1px rgba(0,0,0,.5);
+}
+.xp-dlg-title span{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.xp-dlg-body{padding:16px 18px;display:flex;gap:14px;align-items:flex-start;color:#111;}
+.xp-dlg-icon{
+	width:34px;height:34px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+	background:linear-gradient(180deg,#5aa0f5,#1f5bc4);color:#fff;font:700 20px/1 var(--xp-font);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+}
+.xp-dlg-text{flex:1 1 auto;min-width:0;}
+.xp-dlg-text b{display:block;margin-bottom:4px;color:#0a246a;}
+.xp-dlg-text small{color:#5b5b52;}
+.xp-dlg-foot{
+	display:flex;justify-content:flex-end;gap:8px;padding:0 14px 14px;
+}
+.xp-dlg-btn{
+	min-width:78px;padding:4px 12px;border:1px solid #7b7565;border-radius:3px;cursor:pointer;
+	background:linear-gradient(180deg,#fefefc,#f0eee1 42%,#e2dece 60%,#eceada);
+	font:12px/1.4 var(--xp-font);color:#111;box-shadow:inset 0 1px 0 #fff;
+}
+.xp-dlg-btn:hover{border-color:#e7a13a;background:linear-gradient(180deg,#fffdf3,#f8e6b4);}
+.xp-dlg-btn--default{font-weight:700;box-shadow:inset 0 1px 0 #fff,0 0 0 1px #0a246a;}

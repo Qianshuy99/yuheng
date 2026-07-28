@@ -1,0 +1,102 @@
+<!doctype html>
+<!-- 讨论页样板：检查 DiscussionHero、PostStream、侧栏 Scrubber、回复框在 XP 皮肤下的表现。
+     DOM 结构照 Flarum 1.x 真实层级来：
+     .DiscussionPage-discussion > .container > (nav.DiscussionPage-nav + .DiscussionPage-stream) -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>Claude Opus 5 在长上下文检索上的实测 - 言灵工坊</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./forum.css">
+</head>
+<body>
+<div id="app" class="App">
+	<div id="app-navigation" class="App-navigation"></div>
+	<div id="drawer" class="App-drawer">
+		<header id="header" class="App-header">
+			<div class="container">
+				<div class="Header-title"><a href="#"><span style="font-weight:700">言灵工坊</span></a></div>
+				<div id="header-primary" class="Header-primary"><ul class="Header-controls">
+					<li><a class="Button Button--link" href="#">全部讨论</a></li>
+					<li><a class="Button Button--link" href="#">标签</a></li>
+				</ul></div>
+				<div id="header-secondary" class="Header-secondary"><ul class="Header-controls">
+					<li class="item-search"><div class="Search"><div class="Search-input"><input class="FormControl" type="search" placeholder="搜索论坛…"></div></div></li>
+					<li class="item-notifications NotificationsDropdown Dropdown"><button class="Dropdown-toggle Button Button--flat">通知</button></li>
+					<li class="item-session SessionDropdown Dropdown"><button class="Dropdown-toggle Button Button--user"><span class="Button-label username">xiyan</span></button></li>
+				</ul></div>
+			</div>
+		</header>
+	</div>
+	<main class="App-content DiscussionPage">
+		<div id="content">
+			<div class="DiscussionPage-discussion">
+				<div class="container">
+					<nav class="DiscussionPage-nav">
+						<ul>
+							<li class="item-scrubber">
+								<div class="PostStreamScrubber Dropdown">
+									<div class="Dropdown-menu">
+										<div class="Scrubber">
+											<a class="Scrubber-first">第 1 楼</a>
+											<div class="Scrubber-scrollbar">
+												<div class="Scrubber-before" style="height:20%"></div>
+												<div class="Scrubber-handle" style="height:30%"><div class="Scrubber-bar"></div><div class="Scrubber-info"><strong>3</strong><span class="Scrubber-description">2 小时前</span></div></div>
+												<div class="Scrubber-after" style="height:50%"></div>
+											</div>
+											<a class="Scrubber-last">第 12 楼</a>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li class="item-reply"><button class="Button Button--primary">回复</button></li>
+							<li class="item-controls"><div class="ButtonGroup"><button class="Button">关注</button><button class="Button Dropdown-toggle"><span class="Button-caret"></span></button></div></li>
+						</ul>
+					</nav>
+					<div class="DiscussionPage-stream">
+						<div class="DiscussionHero">
+							<div class="container">
+								<ul class="DiscussionHero-items">
+									<li class="item-tags"><span class="TagsLabel"><span class="TagLabel">技术</span></span></li>
+									<li class="item-title"><h1 class="DiscussionHero-title">Claude Opus 5 在长上下文检索上的实测</h1></li>
+								</ul>
+							</div>
+						</div>
+						<div class="PostStream" id="mock-stream"></div>
+						<article class="Post ReplyPlaceholder" style="padding:12px">
+							<span class="Avatar" style="--size:32px"></span>
+							<span style="margin-left:8px">写下你的回复…</span>
+						</article>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div class="App-composer"><div class="Composer"><div class="Composer-handle"></div><div class="Composer-content">
+		<h3 class="Composer-header">回复：Claude Opus 5 在长上下文检索上的实测</h3>
+		<div class="Composer-body"><textarea class="FormControl Composer-flexible" rows="4">semantic-splitter 那一轮我也想看数据。</textarea></div>
+		<div class="Composer-footer"><ul class="Composer-controls"><li><button class="Button Button--primary">发布回复</button></li></ul></div>
+	</div></div></div>
+</div>
+<script>
+const posts = [
+	['kirara', 1, '<p>把 200k 上下文塞满以后，召回率并没有想象中那么差。我做了三组测试：</p><ul><li>单针检索（needle in haystack）</li><li>多针交叉引用</li><li>长距离代码依赖追踪</li></ul><blockquote>结论：前两组基本满分，第三组在 150k 之后开始掉。</blockquote><pre><code>for depth in range(0, 200_000, 10_000):\n    run_eval(depth)</code></pre>'],
+	['lumen', 2, '<p>第三组的掉点是不是和 chunk 边界有关？我这边把切分改成语义边界之后好了一些。</p>'],
+	['kirara', 3, '<p>有可能。我下一轮换成 <code>semantic-splitter</code> 再跑一遍，跑完贴数据。</p>'],
+];
+document.getElementById('mock-stream').innerHTML = posts.map(([u, n, body]) => `
+	<div class="PostStream-item">
+		<article class="Post CommentPost">
+			<header class="Post-header"><ul>
+				<li class="PostUser"><h3><span class="Avatar" style="--size:24px"><img src="data:image/svg+xml;utf8,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;48&quot; height=&quot;48&quot;%3E%3Crect width=&quot;48&quot; height=&quot;48&quot; fill=&quot;%23ec9a3c&quot;/%3E%3C/svg%3E" alt=""></span><a class="PostUser-name">${u}</a></h3></li>
+				<li class="PostMeta"><a class="PostMeta-permalink">#${n} · 2 小时前</a></li>
+			</ul></header>
+			<div class="Post-body">${body}</div>
+			<aside class="Post-footer"><ul><li><button class="Button Button--link">回复</button></li><li><button class="Button Button--link">点赞</button></li></ul></aside>
+		</article>
+	</div>`).join('');
+</script>
+<script src="./gm-mock.js"></script>
+<script src="./skin.js"></script>
+</body>
+</html>

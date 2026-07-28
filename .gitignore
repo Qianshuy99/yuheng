@@ -1,0 +1,15 @@
+# 依赖
+node_modules/
+
+# 发布产物入库：@downloadURL 指向仓库里的 dist/yuheng.user.js，油猴靠它更新
+# （只忽略预览侧的中间物，见下）
+
+# 无头 Chrome 的一次性 profile（scripts/shots.mjs、scripts/selfcheck.mjs 会自动重建）
+.chrome-profile/
+# 生成资源时的中间图（scripts/gen-assets.py 的落地物在 src/gen/ 与 assets/）
+.preview-tmp/
+
+# 预览产物：由 npm run preview 生成，不入库
+preview/skin.js
+preview/manifest.json
+preview/shots/

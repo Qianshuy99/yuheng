@@ -1,0 +1,151 @@
+<!doctype html>
+<!--
+  本地预览用的静态样板，不参与油猴脚本发布。
+  用真实的 flarum forum.css + 仿造的 Flarum DOM 结构，离线检查 XP 皮肤效果。
+  用法：node preview/build.mjs 生成 preview/index.html，再用浏览器/headless 截图。
+-->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>言灵工坊 - 首页</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./forum.css">
+</head>
+<body>
+<div id="app" class="App">
+	<div id="app-navigation" class="App-navigation"></div>
+	<div id="drawer" class="App-drawer">
+		<header id="header" class="App-header">
+			<div id="header-navigation" class="Header-navigation"></div>
+			<div class="container">
+				<div class="Header-title"><a href="#" id="home-link"><span style="font-weight:700">言灵工坊</span></a></div>
+				<div id="header-primary" class="Header-primary">
+					<ul class="Header-controls">
+						<li><a class="Button Button--link" href="#">全部讨论</a></li>
+						<li><a class="Button Button--link" href="#">标签</a></li>
+					</ul>
+				</div>
+				<div id="header-secondary" class="Header-secondary">
+					<ul class="Header-controls">
+						<li class="item-search"><div class="Search"><div class="Search-input"><input class="FormControl" type="search" placeholder="搜索论坛…"></div></div></li>
+						<li class="item-notifications NotificationsDropdown Dropdown"><button class="Dropdown-toggle Button Button--flat">通知</button></li>
+						<li class="item-session SessionDropdown Dropdown">
+							<button class="Dropdown-toggle Button Button--user">
+								<span class="Avatar"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%23316ac5'/%3E%3C/svg%3E" alt=""></span>
+								<span class="Button-label username">xiyan</span>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</header>
+	</div>
+	<main class="App-content IndexPage">
+		<div id="content">
+			<div class="Hero WelcomeHero">
+				<div class="container">
+					<h1>欢迎来到言灵工坊</h1>
+					<p class="Hero-subtitle">以指令为笔，号令 AI 之躯。</p>
+				</div>
+			</div>
+			<div class="container">
+				<div class="sideNavContainer">
+				<nav class="IndexPage-nav sideNav">
+					<ul>
+						<li class="item-newDiscussion"><button class="Button Button--primary">发起讨论</button></li>
+						<li><div class="Dropdown Dropdown--select"><ul class="Dropdown-menu">
+							<li class="active"><a href="#">全部讨论</a></li>
+							<li><a href="#">我关注的</a></li>
+							<li><a href="#">标签</a></li>
+						</ul></div></li>
+					</ul>
+				</nav>
+				<div class="IndexPage-results sideNavOffset">
+					<ul class="IndexPage-toolbar">
+						<li class="IndexPage-toolbar-view"><div class="Dropdown"><button class="Dropdown-toggle Button">最新 <span class="Button-caret"></span></button></div></li>
+						<li class="IndexPage-toolbar-action"><button class="Button Button--flat">全部标为已读</button></li>
+					</ul>
+					<div class="DiscussionList">
+						<ul class="DiscussionList-discussions" id="mock-list"></ul>
+						<div class="DiscussionList-loadMore"><button class="Button">加载更多</button></div>
+					</div>
+				</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</div>
+<script>
+const titles = [
+	['Claude Opus 5 在长上下文检索上的实测', 'kirara', 42, '把 200k 上下文塞满以后，召回率并没有想象中那么差…'],
+	['自建 RAG：向量库选型踩坑记录', 'lumen', 17, 'pgvector、qdrant、milvus 三家都试了一遍，结论有点反直觉。'],
+	['求助：Agent 工具调用总是在第三轮乱掉', 'nori', 8, '前两轮都正常，第三轮开始参数就开始幻觉，有人遇到过吗？'],
+	['分享一个 Prompt 版本管理的小工具', 'akira', 63, '用 git 管 prompt，配 diff 视图，写了个 CLI。'],
+	['多模态模型做 OCR 的性价比对比', 'shino', 25, '同一批发票，六个模型跑下来价格差了 8 倍。'],
+	['每周挑战赛 #12：用最少 token 实现文本分类', 'mods', 104, '本期奖励双倍积分，截止到周日 23:59。'],
+];
+document.getElementById('mock-list').innerHTML = titles.map(([t, u, n, ex]) => `
+	<li class="DiscussionListItem">
+		<div class="DiscussionListItem-content Slidable-content">
+			<a class="DiscussionListItem-author"><span class="Avatar" style="--size:32px"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%23ec9a3c'/%3E%3C/svg%3E" alt=""></span></a>
+			<ul class="DiscussionListItem-badges badges"></ul>
+			<a class="DiscussionListItem-main"><h2 class="DiscussionListItem-title">${t}</h2>
+				<ul class="DiscussionListItem-info">
+					<li class="item-tags"><span class="TagsLabel"><span class="TagLabel">技术</span></span></li>
+					<li class="item-terminalPost"><span class="username">${u}</span> · 2 小时前</li>
+					<li class="item-excerpt">${ex}</li>
+				</ul>
+			</a>
+			<span class="DiscussionListItem-count">${n}</span>
+		</div>
+	</li>`).join('');
+</script>
+<script src="./gm-mock.js"></script>
+<script src="./skin.js"></script>
+<script>
+// 复刻站点自带的悬浮“切换站点”按钮（closed shadow root + fixed 右下角 z-index 99999），
+// 用来验证皮肤把它藏掉了、不会压在任务栏上。
+(function () {
+	const host = document.createElement('div');
+	host.id = 'site-switcher-container';
+	const shadow = host.attachShadow({ mode: 'closed' });
+	shadow.innerHTML = '<style>.switcher-btn{position:fixed;bottom:28px;right:28px;padding:10px 22px;border-radius:30px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border:none;font:500 14px system-ui;z-index:99999}</style><button class="switcher-btn">国内站</button>';
+	document.body.append(host);
+})();
+</script>
+<script>
+// 预览钩子：加 hash 就自动展开对应 UI，方便 headless 截图。
+// 主题里的 id/class 前缀已从 xpw- 换成 xp-，外壳的是 yh-。
+addEventListener('load', () => {
+	const click = (sel, index = 0) => document.querySelectorAll(sel)[index]?.click();
+	// 开机动画会盖住整屏，等它自己结束再操作（最多等 5 秒）
+	const ready = (fn, waited = 0) => {
+		if (!document.querySelector('.xp-boot') || waited > 5000) return void setTimeout(fn, 200);
+		setTimeout(() => ready(fn, waited + 150), 150);
+	};
+	ready(() => {
+		const hash = location.hash;
+		if (hash === '#start') click('#xp-start');
+		if (hash === '#min') click('#xp-task');
+		if (hash === '#restore') click('.xp-tbtn', 1);
+		if (hash === '#panel') click('.yh-ball');
+		// 面板里的按钮都要先开面板，再按文字找
+		const inPanel = (text) => {
+			click('.yh-ball');
+			setTimeout(() => {
+				[...document.querySelectorAll('.yh-btn')].find((b) => b.textContent.includes(text))?.click();
+			}, 250);
+		};
+		if (hash === '#import') inPanel('导入主题');
+		if (hash === '#about') inPanel('关于');
+		if (hash === '#site') {
+			click('#xp-start');
+			setTimeout(() => {
+				[...document.querySelectorAll('.xp-mi')].find((b) => b.textContent.includes('切换站点'))?.click();
+			}, 250);
+		}
+	});
+});
+</script>
+</body>
+</html>
