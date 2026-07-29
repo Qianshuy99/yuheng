@@ -2,7 +2,7 @@
 // @name        玉衡主题助手
 // @name:en     YuHeng Skin Engine
 // @namespace   https://github.com/Qianshuy99/yuheng
-// @version     1.0.2
+// @version     1.0.3
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
@@ -41,7 +41,7 @@
     /** 引擎名：只出现在控制台、元数据、底部小字 */
     engine: "Dubhe Core",
     /** 单一版本号：产品与引擎同版本，不再各带一套 */
-    version: "1.0.2",
+    version: "1.0.3",
     author: "Qianshuy99",
     slogan: "玉衡焕新，指尖星辰。",
     /** 北斗第五星（第七星是摇光，方案原文写错了） */
@@ -51,7 +51,7 @@
     /** 发布产物的直链：油猴按这个做更新检查，README 的安装按钮也指向它 */
     download: "https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js",
     /** 底部署名，见品牌方案第九章 */
-    footer: "YuHeng v1.0.2 · Dubhe Core",
+    footer: "YuHeng v1.0.3 · Dubhe Core",
     menuPrefix: "🌟 玉衡：",
     icons: ICONS
   });
@@ -1483,7 +1483,7 @@ ${body}
   }
 
   // src/core/ui/official.js
-  var OFFICIAL_PATH = "Qianshuy99/yuheng@main";
+  var OFFICIAL_PATH = "Qianshuy99/yuheng@4476f05";
   var CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OFFICIAL_PATH}/themes/`;
   var RAW_ROOT = "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/";
   var OFFICIAL_CATALOG_URL = `${CDN_ROOT}catalog.json`;

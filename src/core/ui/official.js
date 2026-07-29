@@ -4,7 +4,8 @@ import { dialog } from './dialog.js';
 import { toast } from './toast.js';
 import { validateTheme } from '../validate.js';
 
-const OFFICIAL_PATH = 'Qianshuy99/yuheng@main';
+// 固定提交让目录与主题包始终来自同一版本，避开 CDN 的 @main 边缘缓存不同步。
+const OFFICIAL_PATH = 'Qianshuy99/yuheng@4476f05';
 const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OFFICIAL_PATH}/themes/`;
 const RAW_ROOT = 'https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/';
 
