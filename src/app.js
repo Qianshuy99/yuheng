@@ -276,6 +276,8 @@ export function createApp() {
 		destroy() {
 			unmountTheme();
 			unmountBall();
+			// 面板在 document 上挂了「点外面 / Esc 关闭」，得让它自己摘掉
+			panel?.destroy();
 			removeShell();
 			shellReady = false;
 			panel = null;

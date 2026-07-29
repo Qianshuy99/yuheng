@@ -34,6 +34,14 @@
 								<span class="Avatar"><img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%23316ac5'/%3E%3C/svg%3E" alt=""></span>
 								<span class="Button-label username">Qianshuy99</span>
 							</button>
+							<!-- 真实的下拉菜单：Flarum 靠 .open 显示它。加在这里是因为线上「点头像没反应」
+							     其实是菜单被 header 的 overflow:hidden 裁掉了，样板里没有菜单就测不出来。 -->
+							<ul class="Dropdown-menu Dropdown-menu--right">
+								<li><a href="#" class="hasIcon">我的主页</a></li>
+								<li><a href="#" class="hasIcon">设置</a></li>
+								<li class="Dropdown-separator"></li>
+								<li><button type="button" class="hasIcon">退出登录</button></li>
+							</ul>
 						</li>
 					</ul>
 				</div>
@@ -100,6 +108,19 @@ document.getElementById('mock-list').innerHTML = titles.map(([t, u, n, ex]) => `
 		</div>
 	</li>`).join('');
 </script>
+<script>
+// Flarum 的 Dropdown 是 Mithril 组件，样板里没有它，就手写最小行为：
+// 点 .Dropdown-toggle 给父级 .Dropdown 加 .open（forum.css 里 `.open .Dropdown-menu{display:block}`）。
+for (const toggle of document.querySelectorAll('.Dropdown-toggle')) {
+	toggle.addEventListener('click', (ev) => {
+		ev.preventDefault();
+		const dropdown = toggle.closest('.Dropdown');
+		const wasOpen = dropdown.classList.contains('open');
+		for (const other of document.querySelectorAll('.Dropdown.open')) other.classList.remove('open');
+		if (!wasOpen) dropdown.classList.add('open');
+	});
+}
+</script>
 <script src="./gm-mock.js"></script>
 <script src="./skin.js"></script>
 <script>
@@ -129,6 +150,7 @@ addEventListener('load', () => {
 		if (hash === '#min') click('#xp-task');
 		if (hash === '#restore') click('.xp-tbtn', 1);
 		if (hash === '#panel') click('.yh-ball');
+		if (hash === '#session') click('.SessionDropdown .Dropdown-toggle');
 		// 面板里的按钮都要先开面板，再按文字找
 		const inPanel = (text) => {
 			click('.yh-ball');

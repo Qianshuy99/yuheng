@@ -1,11 +1,16 @@
 # 玉衡主题助手（YuHeng）
 
-一个油猴换肤引擎：外壳是「玉衡」（青瓷绿的悬浮控制器 + 面板），内核是 **Dubhe Core**
-（注册 / 匹配 / 注入 / 校验），皮肤是可插拔的**主题包**。内置一套 Windows XP Luna
-主题，用在 Flarum 论坛上。
+玉衡是一个面向网站的 Userscript 主题管理器。它在匹配的网站上提供一个青瓷绿的悬浮控制器，用于选择、配置、导入和导出主题；未匹配网站则在 `document-start` 立即退出，不注入 DOM 或样式。
+
+项目由三个边界清晰的部分组成：
+
+- **玉衡外壳**：负责主题选择、设置、导入导出和用户反馈。
+- **Dubhe Core**：负责主题注册、`@match` 匹配、注入、卸载与数据校验。
+- **主题包**：负责目标网站的视觉与受控交互。仓库内置 Windows XP Luna 主题，适用于 AICue 的 Flarum 站点。
 
 [![安装脚本](https://img.shields.io/badge/Install-Userscript-A8CCC0?style=for-the-badge)](https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-59636d?style=for-the-badge)](LICENSE)
+[![使用说明](https://img.shields.io/badge/Docs-GitHub%20Pages-3F6E60?style=for-the-badge)](https://qianshuy99.github.io/yuheng/)
 
 ![玉衡 · Windows XP 主题](assets/screenshots/home.png)
 
@@ -15,15 +20,27 @@
    青瓷绿 #A8CCC0                injector/validate        XP 自己是 Luna 蓝
 ```
 
+## 适用范围
+
+| 项目 | 当前状态 |
+| --- | --- |
+| 内置主题 | Windows XP Luna |
+| 内置匹配站点 | `*.aicue.top` |
+| 脚本管理器 | Tampermonkey、Violentmonkey |
+| 可导入主题 | 纯 CSS JSON 主题包，不执行第三方 JavaScript |
+| 浏览器 | 支持现代 Userscript API 的桌面浏览器 |
+
 ## 安装
+
+完整的安装、使用、导入主题与主题制作说明见 [玉衡使用说明](https://qianshuy99.github.io/yuheng/)。
 
 1. 浏览器装 [Tampermonkey](https://www.tampermonkey.net/)（或 Violentmonkey）。
 2. 点上面的安装按钮，或直接打开
    [dist/yuheng.user.js](dist/yuheng.user.js) 的
    [raw 链接](https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js)。
-3. 访问 https://www.aicue.top/ ，右侧会出现青瓷绿的悬浮球；点开面板选主题。
+3. 访问 [aicue.top](https://www.aicue.top/) 或其匹配子站点；右侧会出现青瓷绿的悬浮球。点开面板后即可选择主题。
 
-`Ctrl+Alt+X` 一键开关 XP 主题，油猴菜单里也有开关、开机动画、壁纸命令。
+`Ctrl+Alt+X` 可快速启用或关闭 XP 主题；油猴菜单也提供主题开关、开机动画与壁纸命令。未注册主题的网站不会显示悬浮球，也不会修改页面。
 
 ## 内置的 XP 主题都有什么
 
@@ -38,29 +55,33 @@
 
 其余状态（开机动画、还原、关于框、切换站点框）在 [assets/screenshots/](assets/screenshots/)。
 
-## 快速开始
+## 开发与发布
 
 ```bash
-npm install
-npm run assets     # 可选：重新生成图标与壁纸 base64（需要 Python + Pillow）
-npm run build      # → dist/yuheng.user.js，拖进 Tampermonkey 安装
+npm install          # 安装构建与预览依赖
+npm run assets        # 可选：重新生成图标与壁纸 base64（需要 Python + Pillow）
+npm run build         # 生成 dist/yuheng.user.js 与 dist/manifest.json
 ```
 
-开发时：
+本地预览与回归命令：
 
 ```bash
-npm run preview    # → preview/skin.js，然后浏览器打开 preview/index.html
-npm run check      # 无头 Chrome 跑 preview/selfcheck.html，42 项断言
-npm run shots      # 无头 Chrome 拍 10 张回归图到 preview/shots/
+npm run preview       # 生成 preview/skin.js，浏览器打开 preview/index.html
+npm run check         # 无头 Chrome 执行 preview/selfcheck.html 的行为断言
+npm run shots         # 无头 Chrome 生成视觉回归图到 preview/shots/
 ```
 
 `preview/index.html` 支持 hash 钩子驱动 UI，方便看单个状态：
 `#boot` `#start` `#min` `#restore` `#panel` `#import` `#about` `#site`，
 加 `?reset` 清空模拟存储回到首次安装状态。
 
-`dist/yuheng.user.js` **入库**（`@downloadURL` 指向仓库里的这个文件，油猴按它更新），
-所以改完 `src/` 一定要 `npm run build` 再提交，否则用户装到的还是旧版。
-`assets/screenshots/` 里的图是 `npm run shots` 的产物挑出来的，README 引用它们。
+### 发布清单
+
+`dist/yuheng.user.js` 是**入库的发布产物**：`@downloadURL` 指向它，脚本管理器也据此更新。任何 `src/`、构建脚本或元数据变更，都必须先执行 `npm run build` 并提交更新后的 `dist/` 文件；否则安装链接仍会提供旧实现。
+
+提交前执行 `npm run check`。涉及 UI、布局或主题样式时，再执行 `npm run shots` 并确认关键状态。`assets/screenshots/` 保存从视觉回归结果中挑选的项目截图，README 和 GitHub Pages 文档均依赖这些图片。
+
+推送到 `main` 后，CI 会重新构建并检查 `dist/yuheng.user.js` 是否与源码一致；文档、logo 或截图改动会触发 GitHub Pages 部署，站点地址为 [qianshuy99.github.io/yuheng](https://qianshuy99.github.io/yuheng/)。
 
 ## 为什么敢用 `@match *://*/*`
 
@@ -71,6 +92,9 @@ npm run shots      # 无头 Chrome 拍 10 张回归图到 preview/shots/
 `main.js`。
 
 ## 主题契约
+
+制作内置主题或可导入 CSS 主题前，请先阅读 [主题开发规范](主题开发规范.md)；GitHub Pages
+也提供从零开始的 [主题制作指南](https://qianshuy99.github.io/yuheng/#themes)。
 
 CSS-only 包就是这个对象的 JSON 序列化；内置主题多一个 `mount()`。
 

@@ -104,31 +104,51 @@ html.yh-theme-xp-luna.xp-wall-luna body::before{
 }
 html.yh-theme-xp-luna.xp-wall-plain body::before{background-image:linear-gradient(180deg,#3a6ea5,#3a6ea5);}
 
-/* .App 变成一扇 XP 窗口（高度随内容延伸） */
+/* 窗口客户区的白底（body::after，fixed）。
+ * 为什么不画在 #app 上：#app 的高度由内容决定，文档滚到底时它的下边缘会停在
+ * body padding 之上，露出后面的壁纸；而且页面里 #app 之后还可能有别的元素
+ * （站点扩展、公告条），那部分同样是壁纸。窗口外框改成 fixed 之后，
+ * 它永远从 chrome 底部铺到任务栏顶部，与文档高度无关。
+ * 卸载时随 <style> 一起消失，不留 DOM。 */
+html.yh-theme-xp-luna body::after{
+	content:"";position:fixed;z-index:1;pointer-events:none;
+	left:var(--xp-inset-x);right:var(--xp-inset-x);
+	top:calc(var(--xp-inset-top) + var(--xp-chrome-h));
+	bottom:var(--xp-taskbar-h);
+	background:#fff;
+	box-shadow:0 10px 34px rgba(0,0,0,.45);
+}
+/* 窗口边框单独一层，压在内容之上（否则滚动时内容会盖掉下边框那条线）。
+ * 只有边框没有背景，pointer-events:none，不挡点击。 */
+html.yh-theme-xp-luna::after{
+	content:"";position:fixed;z-index:3;pointer-events:none;
+	left:var(--xp-inset-x);right:var(--xp-inset-x);
+	top:calc(var(--xp-inset-top) + var(--xp-chrome-h));
+	bottom:var(--xp-taskbar-h);
+	border:var(--xp-frame) solid #0f5fd4;border-top:0;
+	box-shadow:0 0 0 1px #0a246a,inset 0 0 0 1px rgba(255,255,255,.35);
+}
+/* .App 就是窗口客户区：只负责内容与留白，背景/边框交给上面两层 */
 html.yh-theme-xp-luna #app.App{
 	position:relative!important;
 	z-index:2;
 	margin:var(--xp-inset-top) var(--xp-inset-x) 0;
-	padding:calc(var(--xp-chrome-h) + 8px) 0 24px!important;
+	padding:calc(var(--xp-chrome-h) + 8px) var(--xp-frame) 24px!important;
 	min-height:calc(100vh - var(--xp-taskbar-h) - var(--xp-inset-top));
 	box-sizing:border-box;
-	background:#fff;
-	border:var(--xp-frame) solid #0f5fd4;border-top:0;
-	box-shadow:0 0 0 1px #0a246a,0 10px 34px rgba(0,0,0,.45);
+	background:transparent;
+	border:0;
 }
-/* 最小化：窗口与 chrome 全部隐藏，只剩桌面 */
+/* 最小化：窗口（含两层 fixed 外框）与 chrome 全部隐藏，只剩桌面 */
 html.yh-theme-xp-luna.xp-min #app.App,
 html.yh-theme-xp-luna.xp-min .xp-titlebar,
 html.yh-theme-xp-luna.xp-min .xp-menubar,
 html.yh-theme-xp-luna.xp-min .App-header,
 html.yh-theme-xp-luna.xp-min .App-composer{display:none!important;}
+html.yh-theme-xp-luna.xp-min body::after,
+html.yh-theme-xp-luna.xp-min::after{display:none;}
 html.yh-theme-xp-luna.xp-min body{overflow:hidden;}
 html.yh-theme-xp-luna.xp-min .xp-desktop{display:flex;}
-/* 窗口边框内侧高光 */
-html.yh-theme-xp-luna #app.App::before{
-	content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-	box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
-}
 
 /* ============ 2. 窗口 chrome：标题栏 + 菜单栏（fixed，贴在窗口顶部） ============ */
 .xp-chrome{
@@ -213,8 +233,19 @@ html.yh-theme-xp-luna .App-header{
 }
 html.yh-theme-xp-luna .App-header .container{
 	width:auto!important;max-width:none!important;padding:0!important;height:100%;
-	display:flex;align-items:center;gap:8px;flex-wrap:nowrap;overflow:hidden;
+	display:flex;align-items:center;gap:8px;flex-wrap:nowrap;
+	/* 不能 overflow:hidden —— 通知 / 用户头像的 .Dropdown-menu 是这里的绝对定位子元素，
+	 * 裁掉之后菜单看不见，用户点头像会以为「点了没反应」。溢出交给下面各段的
+	 * min-width:0 + ellipsis 控制。 */
+	overflow:visible;
 }
+/* 工具栏里的下拉要压在窗口内容之上（窗口边框那层是 3） */
+html.yh-theme-xp-luna .App-header .Dropdown-menu{
+	z-index:1191;
+	max-height:calc(100vh - var(--header-height) - var(--xp-taskbar-h) - 12px);
+	overflow-y:auto;
+}
+html.yh-theme-xp-luna .App-header .Header-controls{flex-wrap:nowrap;overflow:visible;}
 html.yh-theme-xp-luna .Header-title{float:none;margin:0 6px 0 0;padding:0;line-height:1;}
 html.yh-theme-xp-luna .Header-logo{max-height:22px;}
 html.yh-theme-xp-luna .Header-primary{float:none;flex:1 1 auto;min-width:0;}
@@ -381,10 +412,27 @@ html.yh-theme-xp-luna .Modal-close .Button{
 html.yh-theme-xp-luna .Modal-body{background:var(--xp-face)!important;color:#111!important;}
 html.yh-theme-xp-luna .Modal-footer{background:var(--xp-face)!important;}
 html.yh-theme-xp-luna .Alert{border-radius:0!important;border:1px solid #b6b2a2;}
+/* 回复框：Flarum 把 .App-composer / .Composer 钉在 bottom:0，正好被任务栏压掉一条
+ * （最下面那行按钮点不到）。这里整体抬到任务栏之上，并把高度上限收到「chrome 底部
+ * 到任务栏顶部」之间，展开时也不会钻到标题栏后面。 */
+html.yh-theme-xp-luna .App-composer{bottom:var(--xp-taskbar-h)!important;}
 html.yh-theme-xp-luna .Composer{
 	border:var(--xp-frame) solid #0f5fd4;border-top:none;border-radius:8px 8px 0 0;
 	box-shadow:0 0 0 1px #0a246a,0 -6px 24px rgba(0,0,0,.35)!important;
 	background:var(--xp-face)!important;
+	max-height:calc(100vh - var(--xp-taskbar-h) - var(--xp-inset-top) - var(--xp-chrome-h))!important;
+}
+/* 手机版 .Composer 自己是 fixed bottom:0，也要抬起来 */
+@media (max-width:767.98px){
+	html.yh-theme-xp-luna .Composer{bottom:var(--xp-taskbar-h)!important;}
+	html.yh-theme-xp-luna .Composer:not(.minimized){
+		top:var(--xp-taskbar-h)!important;height:auto!important;
+	}
+}
+/* 全屏写作：铺满，但底边让给任务栏 */
+html.yh-theme-xp-luna .Composer.fullScreen{
+	bottom:var(--xp-taskbar-h)!important;border-radius:0;
+	max-height:none!important;
 }
 /* 回复框顶部那条标题当成 XP 标题栏画，跟主窗口保持一套语言 */
 html.yh-theme-xp-luna .Composer-header{

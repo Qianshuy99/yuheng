@@ -96,6 +96,17 @@ document.getElementById('mock-stream').innerHTML = posts.map(([u, n, body]) => `
 		</article>
 	</div>`).join('');
 </script>
+<script>
+// hash 钩子：#composer 聚焦回复框，用来核对回复框整体在任务栏之上、
+// 最底下那行「发布回复」按钮没有被状态栏压住。
+//
+// 这里刻意不滚动页面：无头 Chrome 的 --screenshot 会把 position:fixed 元素画在
+// scrollY + top 上，页面一滚，窗口边框和任务栏就整体下移，截图反而失真。
+// 「滚到底不露壁纸」那条改由 selfcheck.html 量 body::after 的定位来保证。
+addEventListener('load', () => setTimeout(() => {
+	if (location.hash === '#composer') document.querySelector('.Composer textarea')?.focus();
+}, 600));
+</script>
 <script src="./gm-mock.js"></script>
 <script src="./skin.js"></script>
 </body>

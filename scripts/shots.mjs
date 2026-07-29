@@ -33,10 +33,15 @@ const SHOTS = [
 	{ name: 'min', page: 'index.html', hash: '#min' },
 	{ name: 'restore', page: 'index.html', hash: '#restore' },
 	{ name: 'panel', page: 'index.html', hash: '#panel' },
+	{ name: 'session', page: 'index.html', hash: '#session' },
 	{ name: 'import', page: 'index.html', hash: '#import' },
 	{ name: 'about', page: 'index.html', hash: '#about' },
 	{ name: 'site', page: 'index.html', hash: '#site' },
 	{ name: 'discussion', page: 'discussion.html', hash: '' },
+	// 写作中的回复框：不能被任务栏压住。
+	// 注意别在截图里滚页面：无头 Chrome 把 position:fixed 画在 scrollY + top 上，
+	// 一滚窗口边框/任务栏就整体下移，截出来的图是假的。滚动相关的断言放 selfcheck。
+	{ name: 'composer', page: 'discussion.html', hash: '#composer' },
 ];
 
 async function findBrowser() {

@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="玉衡主题助手的安装、使用与主题制作说明。">
+  <title>玉衡主题助手 | 使用说明</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="玉衡主题助手首页">
+      <img class="brand-mark" src="./assets/logo.png" alt="">
+      <span>玉衡主题助手</span>
+    </a>
+    <nav aria-label="页面导航">
+      <a href="#install">安装</a>
+      <a href="#use">使用</a>
+      <a href="#themes">制作主题</a>
+      <a href="https://github.com/Qianshuy99/yuheng">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="intro" aria-labelledby="intro-title">
+      <div class="intro-copy">
+        <p class="eyebrow">YuHeng Skin Engine</p>
+        <h1 id="intro-title">玉衡主题助手</h1>
+        <p class="lede">为网站选择、管理与制作主题。玉衡负责控制与安全边界，Dubhe Core 负责匹配和注入，主题包专注于页面本身。</p>
+        <div class="actions">
+          <a class="button primary" href="https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js">安装脚本</a>
+          <a class="button secondary" href="#themes">开始制作主题</a>
+        </div>
+      </div>
+      <figure class="hero-shot">
+        <img src="./assets/screenshots/home.png" alt="应用 Windows XP Luna 主题后的论坛首页">
+      </figure>
+    </section>
+
+    <section class="content-section" id="install" aria-labelledby="install-title">
+      <div class="section-heading">
+        <p class="eyebrow">01 / 开始使用</p>
+        <h2 id="install-title">安装与更新</h2>
+      </div>
+      <ol class="steps">
+        <li><strong>安装脚本管理器</strong><span>在浏览器中安装 Tampermonkey 或 Violentmonkey。</span></li>
+        <li><strong>安装玉衡</strong><span>打开上方“安装脚本”，确认后将 userscript 加入脚本管理器。</span></li>
+        <li><strong>访问支持的网站</strong><span>当前内置 Windows XP Luna 主题适用于 <a href="https://www.aicue.top/">aicue.top</a>。匹配站点时，页面右侧会出现玉衡悬浮球。</span></li>
+        <li><strong>保持更新</strong><span>脚本管理器会按 userscript 的更新地址检查新版；也可以重新打开安装链接手动更新。</span></li>
+      </ol>
+    </section>
+
+    <section class="content-section split" id="use" aria-labelledby="use-title">
+      <div>
+        <p class="eyebrow">02 / 日常操作</p>
+        <h2 id="use-title">在页面上管理主题</h2>
+        <dl class="feature-list">
+          <div><dt>选择主题</dt><dd>点击右侧青瓷绿悬浮球，打开面板后为当前站点选择可用主题，或选择“不使用主题”。</dd></div>
+          <div><dt>调整设置</dt><dd>主题在面板中声明的设置项会显示在主题详情内。修改后会立即应用，或自动重新挂载主题。</dd></div>
+          <div><dt>导入与导出</dt><dd>面板支持粘贴或拖入 JSON 主题包，也可导出当前主题的纯数据版本，用于分发与二次制作。</dd></div>
+          <div><dt>快捷开关</dt><dd><kbd>Ctrl</kbd><span>+</span><kbd>Alt</kbd><span>+</span><kbd>X</kbd> 可快速启用或关闭 XP 主题；油猴菜单中也提供同类命令。</dd></div>
+        </dl>
+      </div>
+      <figure class="inline-shot">
+        <img src="./assets/screenshots/panel.png" alt="玉衡主题面板，显示主题选择和导入导出功能">
+        <figcaption>主题面板只管理当前站点可匹配的主题。</figcaption>
+      </figure>
+    </section>
+
+    <section class="content-section" id="import" aria-labelledby="import-title">
+      <div class="section-heading">
+        <p class="eyebrow">03 / 导入主题</p>
+        <h2 id="import-title">只导入 CSS 数据包</h2>
+      </div>
+      <div class="notice">
+        <strong>安全规则</strong>
+        <p>玉衡不会执行导入包内的 JavaScript。导入包只能包含 CSS、变量、匹配规则和设置定义；带脚本字段的包会被拒绝。包含外链资源时，确认页会列出对应域名。</p>
+      </div>
+      <div class="two-columns">
+        <div>
+          <h3>导入步骤</h3>
+          <ol class="compact-list">
+            <li>打开玉衡面板，选择“导入主题”。</li>
+            <li>粘贴 JSON，或将 JSON 文件拖入对话框。</li>
+            <li>检查名称、适用站点与站外资源提示。</li>
+            <li>确认导入后，为当前站点选中该主题。</li>
+          </ol>
+        </div>
+        <div>
+          <h3>硬性限制</h3>
+          <ul class="compact-list">
+            <li>CSS 最大 512 KB，变量总量最大 512 KB。</li>
+            <li>不允许 <code>@import</code>、<code>javascript:</code>、<code>expression()</code> 等危险构造。</li>
+            <li>导入主题不能覆盖内置主题的 ID。</li>
+            <li>仅支持 <code>bool</code>、<code>select</code>、<code>text</code> 三类设置项。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section theme-guide" id="themes" aria-labelledby="themes-title">
+      <div class="section-heading">
+        <p class="eyebrow">04 / 主题制作</p>
+        <h2 id="themes-title">先从纯 CSS 主题开始</h2>
+        <p>可分发主题使用 JSON；它不运行代码，因此最适合颜色、排版、间距、组件外观和背景资源的定制。</p>
+      </div>
+      <div class="guide-grid">
+        <article>
+          <span class="number">1</span>
+          <h3>确定匹配范围</h3>
+          <p>为目标站点写 userscript 风格的 <code>match</code>，例如 <code>*://example.com/*</code>。不要使用与主题无关的宽泛规则。</p>
+        </article>
+        <article>
+          <span class="number">2</span>
+          <h3>限定 CSS 作用域</h3>
+          <p>主题 ID 中的点会替换为短横线。<code>example.paper</code> 的全部规则都以 <code>html.yh-theme-example-paper</code> 开头。</p>
+        </article>
+        <article>
+          <span class="number">3</span>
+          <h3>声明可配置内容</h3>
+          <p>将颜色、壁纸等全局值放进 <code>vars</code>，将用户可选偏好放进 <code>settings</code>。</p>
+        </article>
+        <article>
+          <span class="number">4</span>
+          <h3>导入并回归测试</h3>
+          <p>在面板中导入 JSON，测试启用、关闭、刷新和每一项设置。确认关闭后页面没有样式残留。</p>
+        </article>
+      </div>
+
+      <h3 class="subheading">最小可导入主题</h3>
+      <pre><code>{
+  "id": "example.paper",
+  "name": "Paper",
+  "version": "1.0.0",
+  "author": "your-name",
+  "description": "用于 example.com 的纸张风格主题。",
+  "match": ["*://example.com/*"],
+  "runAt": "start",
+  "css": "html.yh-theme-example-paper .App { color: #20332c; }",
+  "vars": {
+    "--example-accent": "#2f6f61"
+  },
+  "settings": [
+    { "key": "compact", "type": "bool", "label": "紧凑布局", "default": false }
+  ]
+}</code></pre>
+
+      <div class="two-columns standards">
+        <div>
+          <h3>CSS 规则</h3>
+          <ul class="compact-list">
+            <li>不得写裸 <code>:root</code>、<code>html</code>、<code>body</code> 或无作用域的页面选择器。</li>
+            <li>不得修改 <code>#yh-shell</code> 及其子节点，玉衡外壳不属于主题覆盖范围。</li>
+            <li>优先使用稳定的语义类和 <code>data-*</code> 属性，慎用深层 DOM 选择器与 <code>!important</code>。</li>
+            <li>图片等内联资源使用 data URI，保证导出的主题可独立工作。</li>
+          </ul>
+        </div>
+        <div>
+          <h3>验收清单</h3>
+          <ul class="compact-list">
+            <li>在所有声明的匹配站点和窄屏宽度下检查布局。</li>
+            <li>检查启用、切换、关闭和刷新后的结果。</li>
+            <li>检查文本、表单、弹窗、导航和固定定位元素不互相遮挡。</li>
+            <li>检查未匹配站点不注入主题样式或 DOM。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section builtin" aria-labelledby="builtin-title">
+      <div>
+        <p class="eyebrow">05 / 内置主题开发</p>
+        <h2 id="builtin-title">需要 DOM 或交互时</h2>
+        <p>仓库内主题可在 <code>src/themes/&lt;theme-name&gt;/</code> 中使用 <code>mount(ctx)</code> 创建主题专属 DOM。它必须返回卸载函数，清理节点、监听器、计时器、观察器和行内覆盖。</p>
+        <p>所有 CSS 保持在 <code>theme.css</code>，资源通过构建期模块或 data URI 交付。完成修改后运行以下命令，再将更新后的发布产物一并提交。</p>
+        <pre><code>npm run check
+npm run shots
+npm run build</code></pre>
+        <a class="text-link" href="https://github.com/Qianshuy99/yuheng/blob/main/%E4%B8%BB%E9%A2%98%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83.md">查看完整主题开发规范</a>
+      </div>
+      <figure class="inline-shot">
+        <img src="./assets/screenshots/discussion.png" alt="Windows XP Luna 主题下的论坛讨论页面">
+        <figcaption>Windows XP Luna 是内置主题示例，包含 CSS 与受控的 DOM 生命周期。</figcaption>
+      </figure>
+    </section>
+  </main>
+
+  <footer>
+    <span>玉衡主题助手</span>
+    <span>YuHeng v1.0.0 · Dubhe Core</span>
+    <a href="https://github.com/Qianshuy99/yuheng/issues">反馈问题</a>
+  </footer>
+</body>
+</html>

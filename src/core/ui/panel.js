@@ -1,8 +1,14 @@
 // 玉衡主面板：品牌方案第二章那套 popup 布局，落到悬浮面板上
 // （油猴没有 popup 页，GM_registerMenuCommand 只能给纯文字菜单，塞不了 HTML）。
+//
+// 交互是「球变成面板」：开面板时悬浮球缩小淡出，面板从球心放大出来；关面板时反过来。
+// 因为球开着面板时是隐藏的，关闭只能走 × / 点面板外面 / Esc，这三条都在这里。
 import { BRAND } from '../../brand.js';
 import { el, shellRoot } from './dom.js';
 import { emptyState } from './empty.js';
+
+/** 开合动画时长，要和 shell-css.js 里的 keyframes 对齐 */
+const OUT_MS = 160;
 
 /**
  * @param {object} ctrl 控制器，见 src/app.js
@@ -23,19 +29,43 @@ export function createPanel(ctrl) {
 	panel.addEventListener('click', (ev) => ev.stopPropagation());
 	shellRoot().append(panel);
 
+	/** 当前被「变形」藏起来的球，关面板时要还原它 */
+	let morphedBall = null;
+	let closeTimer = 0;
+
 	function render() {
 		body.textContent = '';
 		body.append(...sections(ctrl));
 	}
 
 	function show(anchor) {
+		clearTimeout(closeTimer);
 		render();
+		// 两个动画 class 都先摘掉：再次打开（比如从 XP 托盘图标）时动画才会重播，
+		// 中间的 position() 会读一次布局，正好当作 reflow
+		panel.classList.remove('yh-morph-in', 'yh-morph-out');
+		// 先 display:flex 才能量出尺寸，才能把展开原点定到球心上
 		panel.classList.add('yh-open');
 		position(panel, anchor);
+		setOrigin(panel, anchor?.getBoundingClientRect());
+		panel.classList.add('yh-morph-in');
+		if (anchor) {
+			anchor.classList.add('yh-morphed');
+			morphedBall = anchor;
+		}
 	}
 
 	function hide() {
-		panel.classList.remove('yh-open');
+		if (!panel.classList.contains('yh-open')) return;
+		panel.classList.remove('yh-morph-in');
+		panel.classList.add('yh-morph-out');
+		// 球先冒出来，面板同时缩回去，看着就是「面板收回球里」
+		morphedBall?.classList.remove('yh-morphed');
+		morphedBall = null;
+		clearTimeout(closeTimer);
+		closeTimer = setTimeout(() => {
+			panel.classList.remove('yh-open', 'yh-morph-out');
+		}, OUT_MS);
 	}
 
 	function toggle(anchor) {
@@ -45,7 +75,29 @@ export function createPanel(ctrl) {
 
 	const isOpen = () => panel.classList.contains('yh-open');
 
-	return { node: panel, show, hide, toggle, render, isOpen };
+	// 点面板以外 / Esc 关闭。球和对话框都在 #yh-shell 里，点它们不该关面板
+	// （尤其是球：它的 click 先 show()，冒泡上来又立刻 hide()，就永远打不开了）。
+	const onDocClick = (ev) => {
+		if (!isOpen()) return;
+		if (ev.target instanceof Element && ev.target.closest('#yh-shell')) return;
+		hide();
+	};
+	const onKeydown = (ev) => {
+		if (ev.key === 'Escape' && isOpen()) hide();
+	};
+	document.addEventListener('click', onDocClick, true);
+	document.addEventListener('keydown', onKeydown);
+
+	function destroy() {
+		clearTimeout(closeTimer);
+		document.removeEventListener('click', onDocClick, true);
+		document.removeEventListener('keydown', onKeydown);
+		morphedBall?.classList.remove('yh-morphed');
+		morphedBall = null;
+		panel.remove();
+	}
+
+	return { node: panel, show, hide, toggle, render, isOpen, destroy };
 }
 
 function sections(ctrl) {
@@ -179,4 +231,21 @@ function position(panel, anchor) {
 	top = Math.min(Math.max(8, top), Math.max(8, window.innerHeight - size.height - 8));
 	panel.style.left = `${Math.round(left)}px`;
 	panel.style.top = `${Math.round(top)}px`;
+}
+
+/**
+ * 把缩放原点挪到悬浮球圆心上，面板才像是「从球里长出来」的。
+ * 面板已经定完位，所以直接用两者的视口坐标相减；球不在时清掉，回落到 CSS 里的 50%。
+ */
+function setOrigin(panel, ballRect) {
+	if (!ballRect) {
+		panel.style.removeProperty('--yh-origin-x');
+		panel.style.removeProperty('--yh-origin-y');
+		return;
+	}
+	const size = panel.getBoundingClientRect();
+	const x = ballRect.left + ballRect.width / 2 - size.left;
+	const y = ballRect.top + ballRect.height / 2 - size.top;
+	panel.style.setProperty('--yh-origin-x', `${Math.round(x)}px`);
+	panel.style.setProperty('--yh-origin-y', `${Math.round(y)}px`);
 }

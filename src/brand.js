@@ -31,26 +31,42 @@ export const BRAND = Object.freeze({
 // 色板取自 logo 的青瓷绿（实测主色 ≈ #A8CCC0）。
 // 注意：这套色只用于玉衡外壳（悬浮球 / 面板 / Toast / 对话框），
 // 主题包内部（例如 XP 的 Luna 蓝）自己一套，两者分工是「管理器 vs 被管理的内容」。
+//
+// 外壳是浅色的：它要压在各种主题之上（XP Luna 本身就是浅色），深色板子浮在浅色页面上
+// 像是另一个应用；面板里的字又多是主题名/作者名这类正文，浅底更好读。
+// bgDark / bgPanel 保留下来：控制台日志的底色、以及青瓷渐变上的反白文字还在用。
 export const PALETTE = Object.freeze({
 	jade: '#A8CCC0',
 	jadeDeep: '#7FA79B',
+	/** 青瓷绿压深到能当正文/标题色（#A8CCC0 在白底上对比度不够） */
+	jadeInk: '#3F6E60',
 	bgDark: '#16211F',
 	bgPanel: '#1D2B28',
-	accent: '#E8D9A0',
-	text: '#E4EAE7',
-	textMuted: '#8A9793',
-	ok: '#8FD8A8',
-	warn: '#E8C07A',
-	error: '#E58E80',
+	/** 面板/对话框底色 */
+	surface: '#F7FAF9',
+	/** 标题栏、页脚、选中行等次级底色 */
+	surfaceAlt: '#E8F1EE',
+	/** 分隔线与边框 */
+	line: '#C6DAD3',
+	accent: '#B08A2E',
+	text: '#1B2A26',
+	textMuted: '#657873',
+	ok: '#2F7D4F',
+	warn: '#8A6414',
+	error: '#B4453A',
 	radius: '6px',
 });
 
-/** 外壳 UI 的 CSS 变量声明块，注入时拼到 :root。 */
+/** 外壳 UI 的 CSS 变量声明块，注入时拼到 #yh-shell。 */
 export const PALETTE_CSS = `
 	--yh-jade:${PALETTE.jade};
 	--yh-jade-deep:${PALETTE.jadeDeep};
+	--yh-jade-ink:${PALETTE.jadeInk};
 	--yh-bg-dark:${PALETTE.bgDark};
 	--yh-bg-panel:${PALETTE.bgPanel};
+	--yh-surface:${PALETTE.surface};
+	--yh-surface-alt:${PALETTE.surfaceAlt};
+	--yh-line:${PALETTE.line};
 	--yh-accent:${PALETTE.accent};
 	--yh-text:${PALETTE.text};
 	--yh-text-muted:${PALETTE.textMuted};

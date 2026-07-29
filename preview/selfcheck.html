@@ -16,10 +16,28 @@
 	<div id="drawer" class="App-drawer">
 		<header id="header" class="App-header"><div class="container">
 			<div class="Header-title"><a href="#">自检站</a></div>
-			<div id="header-secondary" class="Header-secondary"></div>
+			<div id="header-secondary" class="Header-secondary"><ul class="Header-controls">
+				<!-- 带上真正的 SessionDropdown + .Dropdown-menu：线上「点头像没反应」是 header
+				     的 overflow:hidden 把绝对定位的菜单裁掉了，最小 DOM 里没有菜单就测不出这条。 -->
+				<li class="item-session SessionDropdown Dropdown open">
+					<button class="Dropdown-toggle Button Button--user"><span class="Button-label">Qianshuy99</span></button>
+					<ul class="Dropdown-menu Dropdown-menu--right">
+						<li><a href="#">设置</a></li>
+						<li><button type="button">退出登录</button></li>
+					</ul>
+				</li>
+			</ul></div>
 		</div></div></header>
 	</div>
-	<main class="App-content"><div id="content"></div></main>
+	<main class="App-content"><div id="content">
+		<!-- 撑高文档，好让下面的「滚到底不露壁纸」有东西可滚 -->
+		<div style="height:2400px"></div>
+	</div></main>
+	<!-- 回复框：Flarum 把它钉在 bottom:0（这里没加载 forum.css，手动补上这条定位），
+	     主题要把它整体抬到任务栏之上 -->
+	<div class="App-composer" style="position:fixed;left:0;right:0;bottom:0"><div class="Composer"><div class="Composer-footer">
+		<button class="Button Button--primary">发布回复</button>
+	</div></div></div>
 </div>
 <pre id="result">（未运行）</pre>
 <script src="./gm-mock.js"></script>
@@ -88,8 +106,59 @@ function runChecks() {
 	const headerHeightOn = getComputedStyle(root).getPropertyValue('--header-height').trim();
 	const bodyPadOn = getComputedStyle(document.body).paddingBottom;
 
+	/* --- 1b. 布局回归：线上暴露的三个 bug 都能在离线抓到 --- */
+	// bug 3：header 容器不能裁掉绝对定位的用户菜单，否则点头像「像是没反应」
+	const headerContainer = document.querySelector('.App-header .container');
+	check('header 容器不裁切下拉菜单（overflow 非 hidden）',
+		headerContainer && getComputedStyle(headerContainer).overflowX !== 'hidden',
+		headerContainer ? getComputedStyle(headerContainer).overflow : '(无 .container)');
+	const menu = document.querySelector('.App-header .SessionDropdown .Dropdown-menu');
+	const menuVisible = menu && getComputedStyle(menu).display !== 'none'
+		&& menu.getBoundingClientRect().height > 0;
+	check('打开的用户菜单可见（.open 下有高度）', Boolean(menuVisible),
+		menu ? `display=${getComputedStyle(menu).display} h=${Math.round(menu.getBoundingClientRect().height)}` : '(无菜单)');
+	// bug 1：回复框整体（含最底一行按钮）要落在任务栏上边缘之上
+	const taskbarH = parseFloat(getComputedStyle(root).getPropertyValue('--xp-taskbar-h')) || 0;
+	const composer = document.querySelector('.App-composer');
+	const composerBottom = composer ? composer.getBoundingClientRect().bottom : null;
+	check('任务栏高度变量存在', taskbarH > 0, String(taskbarH));
+	check('回复框底部不被任务栏遮住',
+		composerBottom !== null && composerBottom <= window.innerHeight - taskbarH + 1,
+		`composer.bottom=${Math.round(composerBottom)} 视口-任务栏=${window.innerHeight - taskbarH}`);
+	// bug 2：滚到文档末尾时不能露出壁纸。窗口白底与蓝边框是 body::after / html::after
+	// 两层 fixed，位置与文档高度无关，所以滚动前后量出来应当完全一样。
+	// （截图测不了这条：无头 Chrome 把 fixed 元素画在 scrollY + top 上。）
+	const fillBefore = getComputedStyle(document.body, '::after').bottom;
+	const frameBefore = getComputedStyle(root, '::after').bottom;
+	scrollTo(0, document.body.scrollHeight);
+	check('文档确实滚动了（否则下一条断言没意义）', window.scrollY > 100, `scrollY=${window.scrollY}`);
+	check('窗口白底是 fixed 的，滚动后位置不变',
+		getComputedStyle(document.body, '::after').bottom === fillBefore
+		&& getComputedStyle(document.body, '::after').position === 'fixed',
+		`${fillBefore} → ${getComputedStyle(document.body, '::after').bottom}`);
+	check('窗口边框是 fixed 的，滚动后位置不变',
+		getComputedStyle(root, '::after').bottom === frameBefore
+		&& getComputedStyle(root, '::after').position === 'fixed',
+		`${frameBefore} → ${getComputedStyle(root, '::after').bottom}`);
+	// 白底的下边缘正好压在任务栏上沿：留缝就是壁纸，盖过去就挡住任务栏
+	check('窗口白底下边缘贴着任务栏上沿',
+		parseFloat(fillBefore) === taskbarH, `bottom=${fillBefore} 任务栏=${taskbarH}px`);
+	scrollTo(0, 0);
+
 	/* --- 2. 关掉主题：不能有残留 --- */
 	document.querySelector('#yh-shell .yh-ball')?.click();
+	// bug 4：点球开面板时，球「变成」面板 —— 球应被藏起来（yh-morphed），面板打开
+	const ballAfterOpen = document.querySelector('#yh-shell .yh-ball');
+	check('面板打开后悬浮球隐藏（morph）',
+		ballAfterOpen?.classList.contains('yh-morphed') === true,
+		[...(ballAfterOpen?.classList || [])].join(' '));
+	check('面板处于打开态',
+		document.querySelector('#yh-shell .yh-panel')?.classList.contains('yh-open') === true);
+	// bug 4：面板要浅色。取面板底色的亮度，浅色底 sRGB 三通道都应偏高
+	const panelBg = getComputedStyle(document.querySelector('#yh-shell .yh-panel')).backgroundColor;
+	const rgb = (panelBg.match(/\d+/g) || []).map(Number);
+	const lightPanel = rgb.length >= 3 && (rgb[0] + rgb[1] + rgb[2]) / 3 > 200;
+	check('面板是浅色主题', lightPanel, panelBg);
 	const off = themeRow('不使用主题');
 	check('面板里有「不使用主题」行', Boolean(off));
 	off?.click();
@@ -207,7 +276,10 @@ function runChecks() {
 		JSON.stringify((GM_getValue('yh:themes', []) || []).map((p) => p.id)));
 	closeDialogs();
 
-	document.querySelector('#yh-shell .yh-ball')?.click();
+	// 面板从第 2 段起就一直开着；只有它被关掉时才需要再点球（点开着的球会把它关掉）
+	if (!document.querySelector('#yh-shell .yh-panel')?.classList.contains('yh-open')) {
+		document.querySelector('#yh-shell .yh-ball')?.click();
+	}
 	check('面板里出现了导入的主题', Boolean(themeRow('XP 副本')));
 	const copyRow = themeRow('XP 副本');
 	check('导入主题带删除按钮', Boolean(copyRow?.querySelector('.yh-theme-del')));
