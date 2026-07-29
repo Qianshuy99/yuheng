@@ -1625,6 +1625,8 @@ html.yh-theme-xp-luna{
 	--code-color:#1c1c14;
 	--border-radius:0px;
 	--zindex-header:1000;
+	/* 让 Flarum 保持 ModalManager 高于 Modal-backdrop 的动态层级关系。 */
+	--zindex-modal:1700;
 }
 /* ============ 1. 桌面：壁纸 + 应用窗口 ============
  * 关键约束：Flarum 帖子流依赖 window 滚动（Scrubber、滚动加载），
@@ -2216,7 +2218,6 @@ html.xp-booting{overflow:hidden;}
 /* ============ 13. 收尾修正 ============ */
 html.yh-theme-xp-luna .App-composer{z-index:1500;}
 html.yh-theme-xp-luna .AlertManager{z-index:1600;}
-html.yh-theme-xp-luna .ModalManager,html.yh-theme-xp-luna .Modal-backdrop{z-index:1700;}
 /* 站点自带的“切换站点”悬浮胶囊：fixed 在右下角、z-index 99999，正好压在任务栏上。
  * 它挂在 closed shadow root 里，外部 CSS 进不去（也不能靠 transform 造包含块，
  * 那会把里面 inset:0 的弹窗压成 0×0）。所以整个藏掉，功能改由开始菜单/查看菜单提供。 */

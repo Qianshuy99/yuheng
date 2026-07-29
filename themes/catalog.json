@@ -4,10 +4,10 @@
     {
       "id": "miku.star",
       "name": "初音未来",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": "xiyan",
       "path": "miku/miku.theme.json",
-      "sha256": "daa1dfa4192937d7ab0b9d67563c0996ebf0a99fe9cc88b1b3820002b41c93c6"
+      "sha256": "bc8454e946715229e0e2316d8fc7d8f9ca702ef36f65403daab00ce37aadae77"
     }
   ]
 }
