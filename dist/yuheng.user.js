@@ -2,7 +2,7 @@
 // @name        玉衡主题助手
 // @name:en     YuHeng Skin Engine
 // @namespace   https://github.com/Qianshuy99/yuheng
-// @version     1.0.0
+// @version     1.0.1
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
@@ -41,7 +41,7 @@
     /** 引擎名：只出现在控制台、元数据、底部小字 */
     engine: "Dubhe Core",
     /** 单一版本号：产品与引擎同版本，不再各带一套 */
-    version: "1.0.0",
+    version: "1.0.1",
     author: "Qianshuy99",
     slogan: "玉衡焕新，指尖星辰。",
     /** 北斗第五星（第七星是摇光，方案原文写错了） */
