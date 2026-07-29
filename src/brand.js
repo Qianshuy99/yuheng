@@ -2,6 +2,9 @@
 // 任何地方要写「玉衡」「Dubhe Core」或品牌色，都从这里取，不要硬编码。
 import { ICONS } from './gen/icons.js';
 
+const VERSION = '1.0.3';
+const DOWNLOAD_URL = `https://raw.githubusercontent.com/Qianshuy99/yuheng/main/dist/yuheng.user.js?v=${VERSION}`;
+
 /** 现有 logo 是 363×512 的竖构图汉字，缩到 16px 会糊；重做后把这里改成 false。 */
 export const LOGO_IS_PLACEHOLDER = false;
 
@@ -13,7 +16,7 @@ export const BRAND = Object.freeze({
 	/** 引擎名：只出现在控制台、元数据、底部小字 */
 	engine: 'Dubhe Core',
 	/** 单一版本号：产品与引擎同版本，不再各带一套 */
-	version: '1.0.3',
+	version: VERSION,
 	author: 'Qianshuy99',
 	slogan: '玉衡焕新，指尖星辰。',
 	/** 北斗第五星（第七星是摇光，方案原文写错了） */
@@ -21,9 +24,9 @@ export const BRAND = Object.freeze({
 	homepage: 'https://github.com/Qianshuy99/yuheng',
 	support: 'https://github.com/Qianshuy99/yuheng/issues',
 	/** 发布产物的直链：油猴按这个做更新检查，README 的安装按钮也指向它 */
-	download: 'https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js',
+	download: DOWNLOAD_URL,
 	/** 底部署名，见品牌方案第九章 */
-	footer: 'YuHeng v1.0.3 · Dubhe Core',
+	footer: `YuHeng v${VERSION} · Dubhe Core`,
 	menuPrefix: '🌟 玉衡：',
 	icons: ICONS,
 });

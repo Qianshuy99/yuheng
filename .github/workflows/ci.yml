@@ -30,5 +30,8 @@ jobs:
             exit 1
           fi
 
+      - name: Verify release metadata and official themes
+        run: npm run verify:release
+
       - name: Self-check in headless Chrome
         run: npm run check

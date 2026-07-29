@@ -10,6 +10,7 @@
   "scripts": {
     "assets": "python scripts/gen-assets.py",
     "build": "node scripts/build.mjs",
+    "verify:release": "node scripts/verify-release.mjs",
     "preview": "node scripts/build.mjs --preview",
     "shots": "node scripts/build.mjs --preview && node scripts/shots.mjs",
     "check": "node scripts/build.mjs --preview && node scripts/selfcheck.mjs"

@@ -6,7 +6,7 @@
       "name": "初音未来",
       "version": "1.0.1",
       "author": "xiyan",
-      "url": "https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/themes/miku/miku.theme.json",
+      "path": "miku/miku.theme.json",
       "sha256": "bd6569429af2c81bcd26cb96d8debf9a91862b14dbebb220ceaabc074d9e28ed"
     }
   ]

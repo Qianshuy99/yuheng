@@ -7,8 +7,8 @@
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
 // @supportURL  https://github.com/Qianshuy99/yuheng/issues
-// @updateURL   https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js
-// @downloadURL https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js
+// @updateURL   https://raw.githubusercontent.com/Qianshuy99/yuheng/main/dist/yuheng.user.js?v=1.0.3
+// @downloadURL https://raw.githubusercontent.com/Qianshuy99/yuheng/main/dist/yuheng.user.js?v=1.0.3
 // @icon        data:image/png;base64,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
 // @match       *://*/*
 // @run-at      document-start
@@ -32,6 +32,8 @@
   });
 
   // src/brand.js
+  var VERSION = "1.0.3";
+  var DOWNLOAD_URL = `https://raw.githubusercontent.com/Qianshuy99/yuheng/main/dist/yuheng.user.js?v=${VERSION}`;
   var LOGO_IS_PLACEHOLDER = false;
   var BRAND = Object.freeze({
     /** 用户可见的产品名 */
@@ -41,7 +43,7 @@
     /** 引擎名：只出现在控制台、元数据、底部小字 */
     engine: "Dubhe Core",
     /** 单一版本号：产品与引擎同版本，不再各带一套 */
-    version: "1.0.3",
+    version: VERSION,
     author: "Qianshuy99",
     slogan: "玉衡焕新，指尖星辰。",
     /** 北斗第五星（第七星是摇光，方案原文写错了） */
@@ -49,9 +51,9 @@
     homepage: "https://github.com/Qianshuy99/yuheng",
     support: "https://github.com/Qianshuy99/yuheng/issues",
     /** 发布产物的直链：油猴按这个做更新检查，README 的安装按钮也指向它 */
-    download: "https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js",
+    download: DOWNLOAD_URL,
     /** 底部署名，见品牌方案第九章 */
-    footer: "YuHeng v1.0.3 · Dubhe Core",
+    footer: `YuHeng v${VERSION} · Dubhe Core`,
     menuPrefix: "🌟 玉衡：",
     icons: ICONS
   });
@@ -1483,10 +1485,8 @@ ${body}
   }
 
   // src/core/ui/official.js
-  var OFFICIAL_PATH = "Qianshuy99/yuheng@4476f05";
-  var CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OFFICIAL_PATH}/themes/`;
-  var RAW_ROOT = "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/";
-  var OFFICIAL_CATALOG_URL = `${CDN_ROOT}catalog.json`;
+  var OFFICIAL_ROOT = "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/";
+  var OFFICIAL_CATALOG_URL = officialUrl("catalog.json", BRAND.version);
   function openOfficialCatalog(onAccept) {
     const loading = dialog({
       title: "官方主题库",
@@ -1503,12 +1503,12 @@ ${body}
     });
   }
   async function loadCatalog() {
-    const catalog = JSON.parse(await fetchOfficialText("catalog.json"));
+    const catalog = JSON.parse(await fetchOfficialText("catalog.json", BRAND.version));
     if (!Array.isArray(catalog?.themes)) throw new Error("目录格式无效");
     return catalog.themes.filter(isCatalogEntry);
   }
   function isCatalogEntry(entry) {
-    return entry && typeof entry.id === "string" && typeof entry.name === "string" && typeof entry.version === "string" && typeof entry.url === "string" && (entry.url.startsWith(CDN_ROOT) || entry.url.startsWith(RAW_ROOT));
+    return entry && typeof entry.id === "string" && typeof entry.name === "string" && typeof entry.version === "string" && typeof entry.path === "string" && /^[a-z0-9._-]+\/[a-z0-9._-]+\.theme\.json$/i.test(entry.path);
   }
   function showCatalog(entries, onAccept) {
     const content = entries.length ? entries.map((entry) => el("div", { class: "yh-theme" }, [
@@ -1533,31 +1533,30 @@ ${body}
   }
   async function install(entry, onAccept) {
     try {
-      const text = await fetchOfficialText(entry.url.slice(entry.url.lastIndexOf("/themes/") + 8));
+      const text = await fetchOfficialText(entry.path, entry.sha256 || entry.version);
       if (entry.sha256 && await sha256(text) !== entry.sha256.toLowerCase()) {
         throw new Error("主题包校验和不匹配");
       }
       const result = validateTheme(JSON.parse(text));
       if (!result.ok) throw new Error(result.errors.join("；"));
       if (result.theme.id !== entry.id) throw new Error("主题包 id 与目录不一致");
+      if (result.theme.version !== entry.version) throw new Error("主题包版本与目录不一致");
       if (onAccept(result.theme) !== false) toast(`${result.theme.name} 已从官方主题库安装`, "ok");
     } catch (error) {
       toast(`安装失败：${error.message}`, "error", 5e3);
     }
   }
-  async function fetchOfficialText(path) {
-    const urls = [`${CDN_ROOT}${path}`, `${RAW_ROOT}${path}`];
-    let lastError;
-    for (const url of urls) {
-      try {
-        const response = await fetch(url, { cache: "no-store" });
-        if (response.ok) return response.text();
-        lastError = new Error(`HTTP ${response.status}`);
-      } catch (error) {
-        lastError = error;
-      }
+  function officialUrl(path, cacheKey) {
+    return `${OFFICIAL_ROOT}${path}?v=${encodeURIComponent(cacheKey)}`;
+  }
+  async function fetchOfficialText(path, cacheKey) {
+    try {
+      const response = await fetch(officialUrl(path, cacheKey), { cache: "no-store" });
+      if (response.ok) return response.text();
+      throw new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      throw new Error(`官方源不可用（${error.message || "网络请求失败"}）`);
     }
-    throw new Error(`官方源不可用（${lastError?.message || "网络请求失败"}）`);
   }
   async function sha256(text) {
     const bytes = new TextEncoder().encode(text);

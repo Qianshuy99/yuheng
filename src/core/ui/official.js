@@ -3,13 +3,11 @@ import { el } from './dom.js';
 import { dialog } from './dialog.js';
 import { toast } from './toast.js';
 import { validateTheme } from '../validate.js';
+import { BRAND } from '../../brand.js';
 
-// 固定提交让目录与主题包始终来自同一版本，避开 CDN 的 @main 边缘缓存不同步。
-const OFFICIAL_PATH = 'Qianshuy99/yuheng@4476f05';
-const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OFFICIAL_PATH}/themes/`;
-const RAW_ROOT = 'https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/';
+const OFFICIAL_ROOT = 'https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/';
 
-export const OFFICIAL_CATALOG_URL = `${CDN_ROOT}catalog.json`;
+export const OFFICIAL_CATALOG_URL = officialUrl('catalog.json', BRAND.version);
 
 export function openOfficialCatalog(onAccept) {
 	const loading = dialog({
@@ -31,7 +29,7 @@ export function openOfficialCatalog(onAccept) {
 }
 
 async function loadCatalog() {
-	const catalog = JSON.parse(await fetchOfficialText('catalog.json'));
+	const catalog = JSON.parse(await fetchOfficialText('catalog.json', BRAND.version));
 	if (!Array.isArray(catalog?.themes)) throw new Error('目录格式无效');
 	return catalog.themes.filter(isCatalogEntry);
 }
@@ -41,8 +39,8 @@ function isCatalogEntry(entry) {
 		&& typeof entry.id === 'string'
 		&& typeof entry.name === 'string'
 		&& typeof entry.version === 'string'
-		&& typeof entry.url === 'string'
-		&& (entry.url.startsWith(CDN_ROOT) || entry.url.startsWith(RAW_ROOT));
+		&& typeof entry.path === 'string'
+		&& /^[a-z0-9._-]+\/[a-z0-9._-]+\.theme\.json$/i.test(entry.path);
 }
 
 function showCatalog(entries, onAccept) {
@@ -72,32 +70,32 @@ function showCatalog(entries, onAccept) {
 
 async function install(entry, onAccept) {
 	try {
-		const text = await fetchOfficialText(entry.url.slice(entry.url.lastIndexOf('/themes/') + 8));
+		const text = await fetchOfficialText(entry.path, entry.sha256 || entry.version);
 		if (entry.sha256 && await sha256(text) !== entry.sha256.toLowerCase()) {
 			throw new Error('主题包校验和不匹配');
 		}
 		const result = validateTheme(JSON.parse(text));
 		if (!result.ok) throw new Error(result.errors.join('；'));
 		if (result.theme.id !== entry.id) throw new Error('主题包 id 与目录不一致');
+		if (result.theme.version !== entry.version) throw new Error('主题包版本与目录不一致');
 		if (onAccept(result.theme) !== false) toast(`${result.theme.name} 已从官方主题库安装`, 'ok');
 	} catch (error) {
 		toast(`安装失败：${error.message}`, 'error', 5000);
 	}
 }
 
-async function fetchOfficialText(path) {
-	const urls = [`${CDN_ROOT}${path}`, `${RAW_ROOT}${path}`];
-	let lastError;
-	for (const url of urls) {
-		try {
-			const response = await fetch(url, { cache: 'no-store' });
-			if (response.ok) return response.text();
-			lastError = new Error(`HTTP ${response.status}`);
-		} catch (error) {
-			lastError = error;
-		}
+function officialUrl(path, cacheKey) {
+	return `${OFFICIAL_ROOT}${path}?v=${encodeURIComponent(cacheKey)}`;
+}
+
+async function fetchOfficialText(path, cacheKey) {
+	try {
+		const response = await fetch(officialUrl(path, cacheKey), { cache: 'no-store' });
+		if (response.ok) return response.text();
+		throw new Error(`HTTP ${response.status}`);
+	} catch (error) {
+		throw new Error(`官方源不可用（${error.message || '网络请求失败'}）`);
 	}
-	throw new Error(`官方源不可用（${lastError?.message || '网络请求失败'}）`);
 }
 
 async function sha256(text) {
