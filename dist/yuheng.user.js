@@ -4,7 +4,7 @@
 // @namespace   https://github.com/Qianshuy99/yuheng
 // @version     1.0.0
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
-// @author      xiyan
+// @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
 // @supportURL  https://github.com/Qianshuy99/yuheng/issues
 // @updateURL   https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js
@@ -42,7 +42,7 @@
     engine: "Dubhe Core",
     /** 单一版本号：产品与引擎同版本，不再各带一套 */
     version: "1.0.0",
-    author: "xiyan",
+    author: "Qianshuy99",
     slogan: "玉衡焕新，指尖星辰。",
     /** 北斗第五星（第七星是摇光，方案原文写错了） */
     starLine: "北斗第五星，主平衡与协调。",
@@ -2078,7 +2078,7 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
     id: "xp.luna",
     name: "Windows XP",
     version: "1.0.0",
-    author: "xiyan",
+    author: "Qianshuy99",
     description: "把 Flarum 论坛变成 Windows XP Luna 风格：窗口标题栏、任务栏与开始菜单、经典控件与滚动条。",
     match: ["*://aicue.top/*", "*://*.aicue.top/*"],
     runAt: "start",

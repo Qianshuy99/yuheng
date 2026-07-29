@@ -24,7 +24,7 @@ export const xpTheme = {
 	id: 'xp.luna',
 	name: 'Windows XP',
 	version: '1.0.0',
-	author: 'xiyan',
+	author: 'Qianshuy99',
 	description: '把 Flarum 论坛变成 Windows XP Luna 风格：窗口标题栏、任务栏与开始菜单、经典控件与滚动条。',
 	match: ['*://aicue.top/*', '*://*.aicue.top/*'],
 	runAt: 'start',

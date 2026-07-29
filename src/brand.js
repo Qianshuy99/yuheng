@@ -14,7 +14,7 @@ export const BRAND = Object.freeze({
 	engine: 'Dubhe Core',
 	/** 单一版本号：产品与引擎同版本，不再各带一套 */
 	version: '1.0.0',
-	author: 'xiyan',
+	author: 'Qianshuy99',
 	slogan: '玉衡焕新，指尖星辰。',
 	/** 北斗第五星（第七星是摇光，方案原文写错了） */
 	starLine: '北斗第五星，主平衡与协调。',

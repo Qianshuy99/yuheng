@@ -79,7 +79,7 @@ CSS-only 包就是这个对象的 JSON 序列化；内置主题多一个 `mount(
   id: 'xp.luna',                    // 唯一，字母数字与 . _ -
   name: 'Windows XP',
   version: '1.0.0',
-  author: 'xiyan',
+  author: 'Qianshuy99',
   match: ['*://*.aicue.top/*'],     // 引擎按此决定是否激活
   runAt: 'start',                   // start | idle
   css: '...',                       // 唯一必需的样式载荷
