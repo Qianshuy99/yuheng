@@ -13,6 +13,7 @@ import { toast } from './core/ui/toast.js';
 import { showLoading } from './core/ui/loading.js';
 import { dialog, alertDialog, confirmDialog, aboutDialog } from './core/ui/dialog.js';
 import { openImportDialog, openExportDialog } from './core/ui/import.js';
+import { openOfficialCatalog } from './core/ui/official.js';
 import { validateTheme } from './core/validate.js';
 import { xpTheme, XP_LEGACY_KEYS } from './themes/xp/index.js';
 
@@ -41,7 +42,7 @@ export function createApp() {
 			YHLog.warn(`已存储的主题包 ${result.theme.id} 与内置主题同名，已跳过`);
 			continue;
 		}
-		register({ ...result.theme, source: 'imported' });
+		register({ ...result.theme, source: pack.source === 'official' ? 'official' : 'imported' });
 	}
 
 	const host = location.hostname;
@@ -179,7 +180,7 @@ export function createApp() {
 
 		removeTheme(id) {
 			const theme = getTheme(id);
-			if (!theme || theme.source !== 'imported') return;
+			if (!theme || !['imported', 'official'].includes(theme.source)) return;
 			confirmDialog({
 				title: '删除主题',
 				heading: `要删除「${theme.name}」吗？`,
@@ -211,34 +212,11 @@ export function createApp() {
 		},
 
 		openImport() {
-			openImportDialog((theme) => {
-				// 内置 id 不许被覆盖：导入包每次启动都在内置之后注册，一旦重名就会永久
-				// 顶掉内置主题（而且顺带变成可删除项）。改 id 是导入方的事，引擎只负责拒绝。
-				if (BUILTIN.some((builtin) => builtin.id === theme.id)) {
-					toast(`id「${theme.id}」是内置主题，请改一个 id 再导入`, 'error', 5000);
-					return false;
-				}
-				const packs = loadThemes().filter((pack) => pack.id !== theme.id);
-				packs.push(theme);
-				if (!saveThemes(packs)) {
-					toast('保存失败，可能是存储空间不足', 'error');
-					return false;
-				}
-				const wasMounted = mountedTheme() === theme.id;
-				register({ ...theme, source: 'imported' });
-				// 覆盖的是当前挂着的主题：先卸掉，否则 mountTheme 认为 id 没变会直接跳过
-				if (wasMounted) {
-					unmountTheme();
-					apply({ silent: true });
-					panel?.render();
-				} else if (candidates(location.href).some((item) => item.id === theme.id)) {
-					// 本站命中就直接切过去，省一步手动选择
-					activate(theme.id);
-				} else {
-					panel?.render();
-				}
-				return true;
-			});
+			openImportDialog((theme) => installTheme(theme, 'imported'));
+		},
+
+		openOfficialCatalog() {
+			openOfficialCatalog((theme) => installTheme(theme, 'official'));
 		},
 
 		exportActive() {
@@ -283,6 +261,35 @@ export function createApp() {
 			panel = null;
 		},
 	};
+
+	function installTheme(theme, source) {
+		// 内置 id 不许被覆盖：导入包每次启动都在内置之后注册，一旦重名就会永久
+		// 顶掉内置主题（而且顺带变成可删除项）。改 id 是导入方的事，引擎只负责拒绝。
+		if (BUILTIN.some((builtin) => builtin.id === theme.id)) {
+			toast(`id「${theme.id}」是内置主题，请改一个 id 再导入`, 'error', 5000);
+			return false;
+		}
+		const packs = loadThemes().filter((pack) => pack.id !== theme.id);
+		packs.push({ ...theme, source });
+		if (!saveThemes(packs)) {
+			toast('保存失败，可能是存储空间不足', 'error');
+			return false;
+		}
+		const wasMounted = mountedTheme() === theme.id;
+		register({ ...theme, source });
+		// 覆盖的是当前挂着的主题：先卸掉，否则 mountTheme 认为 id 没变会直接跳过
+		if (wasMounted) {
+			unmountTheme();
+			apply({ silent: true });
+			panel?.render();
+		} else if (candidates(location.href).some((item) => item.id === theme.id)) {
+			// 本站命中就直接切过去，省一步手动选择
+			activate(theme.id);
+		} else {
+			panel?.render();
+		}
+		return true;
+	}
 
 	/* ---------- 启动 ---------- */
 	function boot() {

@@ -8,6 +8,8 @@
 - **Dubhe Core**：负责主题注册、`@match` 匹配、注入、卸载与数据校验。
 - **主题包**：负责目标网站的视觉与受控交互。仓库内置 Windows XP Luna 主题，适用于 AICue 的 Flarum 站点。
 
+玉衡面板中的“官方主题库”固定读取本仓库 [`themes/catalog.json`](themes/catalog.json)，只安装该目录登记且位于同一 GitHub 仓库下的纯 CSS 主题包。下载后的包仍须通过本地安全校验；它与手工导入的包一样可删除。
+
 [![安装脚本](https://img.shields.io/badge/Install-Userscript-A8CCC0?style=for-the-badge)](https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-59636d?style=for-the-badge)](LICENSE)
 [![使用说明](https://img.shields.io/badge/Docs-GitHub%20Pages-3F6E60?style=for-the-badge)](https://qianshuy99.github.io/yuheng/)

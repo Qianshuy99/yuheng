@@ -925,6 +925,10 @@ ${body}
         el("span", { text: "📦" }),
         el("span", { text: "导入主题" })
       ]),
+      el("button", { class: "yh-btn", type: "button", onclick: () => ctrl.openOfficialCatalog() }, [
+        el("span", { text: "☁️" }),
+        el("span", { text: "官方主题库" })
+      ]),
       el("button", {
         class: "yh-btn",
         type: "button",
@@ -944,7 +948,7 @@ ${body}
     return el("label", { class: "yh-switch" }, [input, el("span", { text: label })]);
   }
   function themeRow(theme, isActive, ctrl) {
-    const meta = theme.id ? `v${theme.version || "0.0.0"} · ${theme.author || "未署名"}${theme.source === "imported" ? " · 导入" : ""}` : "保持网站原样";
+    const meta = theme.id ? `v${theme.version || "0.0.0"} · ${theme.author || "未署名"}${theme.source === "official" ? " · 官方" : theme.source === "imported" ? " · 导入" : ""}` : "保持网站原样";
     return el("div", {
       class: "yh-theme" + (isActive ? " yh-active" : ""),
       onclick: () => ctrl.activate(theme.id)
@@ -954,7 +958,7 @@ ${body}
         el("span", { class: "yh-theme-name", text: theme.name || theme.id }),
         el("span", { class: "yh-theme-meta", text: meta })
       ]),
-      theme.source === "imported" ? el("button", {
+      ["imported", "official"].includes(theme.source) ? el("button", {
         class: "yh-theme-del",
         type: "button",
         title: "删除此主题",
@@ -1476,6 +1480,76 @@ ${body}
     const link = el("a", { href: url, download: filename });
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1e3);
+  }
+
+  // src/core/ui/official.js
+  var OFFICIAL_CATALOG_URL = "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/catalog.json";
+  function openOfficialCatalog(onAccept) {
+    const loading = dialog({
+      title: "官方主题库",
+      heading: "正在获取主题目录…",
+      body: el("p", { text: "目录固定托管在 Qianshuy99/yuheng。" }),
+      buttons: [["关闭", null, false]]
+    });
+    loadCatalog().then((catalog) => {
+      loading();
+      showCatalog(catalog, onAccept);
+    }).catch((error) => {
+      loading();
+      toast(`无法获取官方主题库：${error.message}`, "error", 5e3);
+    });
+  }
+  async function loadCatalog() {
+    const response = await fetch(OFFICIAL_CATALOG_URL, { cache: "no-store" });
+    if (!response.ok) throw new Error(`目录请求失败（HTTP ${response.status}）`);
+    const catalog = await response.json();
+    if (!Array.isArray(catalog?.themes)) throw new Error("目录格式无效");
+    return catalog.themes.filter(isCatalogEntry);
+  }
+  function isCatalogEntry(entry) {
+    return entry && typeof entry.id === "string" && typeof entry.name === "string" && typeof entry.version === "string" && typeof entry.url === "string" && entry.url.startsWith("https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/");
+  }
+  function showCatalog(entries, onAccept) {
+    const content = entries.length ? entries.map((entry) => el("div", { class: "yh-theme" }, [
+      el("span", { class: "yh-theme-info" }, [
+        el("span", { class: "yh-theme-name", text: entry.name }),
+        el("span", { class: "yh-theme-meta", text: `v${entry.version} · ${entry.author || "未署名"}` })
+      ]),
+      el("button", {
+        class: "yh-theme-del",
+        type: "button",
+        title: `安装 ${entry.name}`,
+        text: "安装",
+        onclick: () => install(entry, onAccept)
+      })
+    ])) : el("p", { text: "官方主题库暂时没有可安装的主题。" });
+    dialog({
+      title: "官方主题库",
+      heading: "从固定仓库安装主题",
+      body: content,
+      buttons: [["关闭", null, false]]
+    });
+  }
+  async function install(entry, onAccept) {
+    try {
+      const response = await fetch(entry.url, { cache: "no-store" });
+      if (!response.ok) throw new Error(`主题请求失败（HTTP ${response.status}）`);
+      const text = await response.text();
+      if (entry.sha256 && await sha256(text) !== entry.sha256.toLowerCase()) {
+        throw new Error("主题包校验和不匹配");
+      }
+      const result = validateTheme(JSON.parse(text));
+      if (!result.ok) throw new Error(result.errors.join("；"));
+      if (result.theme.id !== entry.id) throw new Error("主题包 id 与目录不一致");
+      if (onAccept(result.theme) !== false) toast(`${result.theme.name} 已从官方主题库安装`, "ok");
+    } catch (error) {
+      toast(`安装失败：${error.message}`, "error", 5e3);
+    }
+  }
+  async function sha256(text) {
+    const bytes = new TextEncoder().encode(text);
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
   }
 
   // src/themes/xp/theme.css
@@ -2755,7 +2829,7 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
         YHLog.warn(`已存储的主题包 ${result.theme.id} 与内置主题同名，已跳过`);
         continue;
       }
-      register({ ...result.theme, source: "imported" });
+      register({ ...result.theme, source: pack.source === "official" ? "official" : "imported" });
     }
     const host = location.hostname;
     function themeSettings(id) {
@@ -2874,7 +2948,7 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
       },
       removeTheme(id) {
         const theme = getTheme(id);
-        if (!theme || theme.source !== "imported") return;
+        if (!theme || !["imported", "official"].includes(theme.source)) return;
         confirmDialog({
           title: "删除主题",
           heading: `要删除「${theme.name}」吗？`,
@@ -2904,30 +2978,10 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
         toast("引擎已刷新", "ok");
       },
       openImport() {
-        openImportDialog((theme) => {
-          if (BUILTIN.some((builtin) => builtin.id === theme.id)) {
-            toast(`id「${theme.id}」是内置主题，请改一个 id 再导入`, "error", 5e3);
-            return false;
-          }
-          const packs = loadThemes().filter((pack) => pack.id !== theme.id);
-          packs.push(theme);
-          if (!saveThemes(packs)) {
-            toast("保存失败，可能是存储空间不足", "error");
-            return false;
-          }
-          const wasMounted = mountedTheme() === theme.id;
-          register({ ...theme, source: "imported" });
-          if (wasMounted) {
-            unmountTheme();
-            apply({ silent: true });
-            panel?.render();
-          } else if (candidates(location.href).some((item) => item.id === theme.id)) {
-            activate(theme.id);
-          } else {
-            panel?.render();
-          }
-          return true;
-        });
+        openImportDialog((theme) => installTheme(theme, "imported"));
+      },
+      openOfficialCatalog() {
+        openOfficialCatalog((theme) => installTheme(theme, "official"));
       },
       exportActive() {
         const id = mountedTheme();
@@ -2964,6 +3018,30 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
         panel = null;
       }
     };
+    function installTheme(theme, source) {
+      if (BUILTIN.some((builtin) => builtin.id === theme.id)) {
+        toast(`id「${theme.id}」是内置主题，请改一个 id 再导入`, "error", 5e3);
+        return false;
+      }
+      const packs = loadThemes().filter((pack) => pack.id !== theme.id);
+      packs.push({ ...theme, source });
+      if (!saveThemes(packs)) {
+        toast("保存失败，可能是存储空间不足", "error");
+        return false;
+      }
+      const wasMounted = mountedTheme() === theme.id;
+      register({ ...theme, source });
+      if (wasMounted) {
+        unmountTheme();
+        apply({ silent: true });
+        panel?.render();
+      } else if (candidates(location.href).some((item) => item.id === theme.id)) {
+        activate(theme.id);
+      } else {
+        panel?.render();
+      }
+      return true;
+    }
     function boot() {
       const theme = apply({ silent: true });
       YHLog.banner(theme?.name);

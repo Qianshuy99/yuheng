@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "themes": [
+    {
+      "id": "miku.star",
+      "name": "初音未来",
+      "version": "1.0.0",
+      "author": "xiyan",
+      "url": "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/miku/miku.theme.json",
+      "sha256": "d08bc903b0b28b723d361878c75b1b99a72b1dd2317731ae91ffc861e84d4439"
+    }
+  ]
+}

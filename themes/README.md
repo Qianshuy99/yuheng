@@ -1,0 +1,9 @@
+# 官方主题目录
+
+`catalog.json` 是玉衡内置“官方主题库”读取的固定索引。每个主题使用一个子目录，至少提交：
+
+- 可直接导入的纯 CSS JSON 主题包；
+- 构建生成的 `manifest.json`；
+- 在 `catalog.json` 中登记主题元数据、raw GitHub URL 与 SHA-256。
+
+玉衡只会请求 `Qianshuy99/yuheng` 仓库 `main/themes/` 下的 raw 文件，并会对下载包执行和本地导入相同的安全校验。新主题应先在独立目录构建、验证后，再将发布产物复制到此处并更新目录索引。

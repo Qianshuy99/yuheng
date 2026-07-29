@@ -146,6 +146,10 @@ function sections(ctrl) {
 			el('span', { text: '📦' }),
 			el('span', { text: '导入主题' }),
 		]),
+		el('button', { class: 'yh-btn', type: 'button', onclick: () => ctrl.openOfficialCatalog() }, [
+			el('span', { text: '☁️' }),
+			el('span', { text: '官方主题库' }),
+		]),
 		el('button', {
 			class: 'yh-btn',
 			type: 'button',
@@ -169,7 +173,7 @@ function switchRow(label, checked, onChange) {
 
 function themeRow(theme, isActive, ctrl) {
 	const meta = theme.id
-		? `v${theme.version || '0.0.0'} · ${theme.author || '未署名'}${theme.source === 'imported' ? ' · 导入' : ''}`
+		? `v${theme.version || '0.0.0'} · ${theme.author || '未署名'}${theme.source === 'official' ? ' · 官方' : theme.source === 'imported' ? ' · 导入' : ''}`
 		: '保持网站原样';
 	return el('div', {
 		class: 'yh-theme' + (isActive ? ' yh-active' : ''),
@@ -180,7 +184,7 @@ function themeRow(theme, isActive, ctrl) {
 			el('span', { class: 'yh-theme-name', text: theme.name || theme.id }),
 			el('span', { class: 'yh-theme-meta', text: meta }),
 		]),
-		theme.source === 'imported'
+		['imported', 'official'].includes(theme.source)
 			? el('button', {
 				class: 'yh-theme-del',
 				type: 'button',
