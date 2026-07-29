@@ -4,7 +4,11 @@ import { dialog } from './dialog.js';
 import { toast } from './toast.js';
 import { validateTheme } from '../validate.js';
 
-export const OFFICIAL_CATALOG_URL = 'https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/catalog.json';
+const OFFICIAL_PATH = 'Qianshuy99/yuheng@main';
+const CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OFFICIAL_PATH}/themes/`;
+const RAW_ROOT = 'https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/';
+
+export const OFFICIAL_CATALOG_URL = `${CDN_ROOT}catalog.json`;
 
 export function openOfficialCatalog(onAccept) {
 	const loading = dialog({
@@ -26,9 +30,7 @@ export function openOfficialCatalog(onAccept) {
 }
 
 async function loadCatalog() {
-	const response = await fetch(OFFICIAL_CATALOG_URL, { cache: 'no-store' });
-	if (!response.ok) throw new Error(`目录请求失败（HTTP ${response.status}）`);
-	const catalog = await response.json();
+	const catalog = JSON.parse(await fetchOfficialText('catalog.json'));
 	if (!Array.isArray(catalog?.themes)) throw new Error('目录格式无效');
 	return catalog.themes.filter(isCatalogEntry);
 }
@@ -39,7 +41,7 @@ function isCatalogEntry(entry) {
 		&& typeof entry.name === 'string'
 		&& typeof entry.version === 'string'
 		&& typeof entry.url === 'string'
-		&& entry.url.startsWith('https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/');
+		&& (entry.url.startsWith(CDN_ROOT) || entry.url.startsWith(RAW_ROOT));
 }
 
 function showCatalog(entries, onAccept) {
@@ -69,9 +71,7 @@ function showCatalog(entries, onAccept) {
 
 async function install(entry, onAccept) {
 	try {
-		const response = await fetch(entry.url, { cache: 'no-store' });
-		if (!response.ok) throw new Error(`主题请求失败（HTTP ${response.status}）`);
-		const text = await response.text();
+		const text = await fetchOfficialText(entry.url.slice(entry.url.lastIndexOf('/themes/') + 8));
 		if (entry.sha256 && await sha256(text) !== entry.sha256.toLowerCase()) {
 			throw new Error('主题包校验和不匹配');
 		}
@@ -82,6 +82,21 @@ async function install(entry, onAccept) {
 	} catch (error) {
 		toast(`安装失败：${error.message}`, 'error', 5000);
 	}
+}
+
+async function fetchOfficialText(path) {
+	const urls = [`${CDN_ROOT}${path}`, `${RAW_ROOT}${path}`];
+	let lastError;
+	for (const url of urls) {
+		try {
+			const response = await fetch(url, { cache: 'no-store' });
+			if (response.ok) return response.text();
+			lastError = new Error(`HTTP ${response.status}`);
+		} catch (error) {
+			lastError = error;
+		}
+	}
+	throw new Error(`官方源不可用（${lastError?.message || '网络请求失败'}）`);
 }
 
 async function sha256(text) {

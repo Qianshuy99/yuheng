@@ -2,7 +2,7 @@
 // @name        玉衡主题助手
 // @name:en     YuHeng Skin Engine
 // @namespace   https://github.com/Qianshuy99/yuheng
-// @version     1.0.1
+// @version     1.0.2
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
@@ -41,7 +41,7 @@
     /** 引擎名：只出现在控制台、元数据、底部小字 */
     engine: "Dubhe Core",
     /** 单一版本号：产品与引擎同版本，不再各带一套 */
-    version: "1.0.1",
+    version: "1.0.2",
     author: "Qianshuy99",
     slogan: "玉衡焕新，指尖星辰。",
     /** 北斗第五星（第七星是摇光，方案原文写错了） */
@@ -51,7 +51,7 @@
     /** 发布产物的直链：油猴按这个做更新检查，README 的安装按钮也指向它 */
     download: "https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js",
     /** 底部署名，见品牌方案第九章 */
-    footer: "YuHeng v1.0.1 · Dubhe Core",
+    footer: "YuHeng v1.0.2 · Dubhe Core",
     menuPrefix: "🌟 玉衡：",
     icons: ICONS
   });
@@ -1483,7 +1483,10 @@ ${body}
   }
 
   // src/core/ui/official.js
-  var OFFICIAL_CATALOG_URL = "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/catalog.json";
+  var OFFICIAL_PATH = "Qianshuy99/yuheng@main";
+  var CDN_ROOT = `https://cdn.jsdelivr.net/gh/${OFFICIAL_PATH}/themes/`;
+  var RAW_ROOT = "https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/";
+  var OFFICIAL_CATALOG_URL = `${CDN_ROOT}catalog.json`;
   function openOfficialCatalog(onAccept) {
     const loading = dialog({
       title: "官方主题库",
@@ -1500,14 +1503,12 @@ ${body}
     });
   }
   async function loadCatalog() {
-    const response = await fetch(OFFICIAL_CATALOG_URL, { cache: "no-store" });
-    if (!response.ok) throw new Error(`目录请求失败（HTTP ${response.status}）`);
-    const catalog = await response.json();
+    const catalog = JSON.parse(await fetchOfficialText("catalog.json"));
     if (!Array.isArray(catalog?.themes)) throw new Error("目录格式无效");
     return catalog.themes.filter(isCatalogEntry);
   }
   function isCatalogEntry(entry) {
-    return entry && typeof entry.id === "string" && typeof entry.name === "string" && typeof entry.version === "string" && typeof entry.url === "string" && entry.url.startsWith("https://raw.githubusercontent.com/Qianshuy99/yuheng/main/themes/");
+    return entry && typeof entry.id === "string" && typeof entry.name === "string" && typeof entry.version === "string" && typeof entry.url === "string" && (entry.url.startsWith(CDN_ROOT) || entry.url.startsWith(RAW_ROOT));
   }
   function showCatalog(entries, onAccept) {
     const content = entries.length ? entries.map((entry) => el("div", { class: "yh-theme" }, [
@@ -1532,9 +1533,7 @@ ${body}
   }
   async function install(entry, onAccept) {
     try {
-      const response = await fetch(entry.url, { cache: "no-store" });
-      if (!response.ok) throw new Error(`主题请求失败（HTTP ${response.status}）`);
-      const text = await response.text();
+      const text = await fetchOfficialText(entry.url.slice(entry.url.lastIndexOf("/themes/") + 8));
       if (entry.sha256 && await sha256(text) !== entry.sha256.toLowerCase()) {
         throw new Error("主题包校验和不匹配");
       }
@@ -1545,6 +1544,20 @@ ${body}
     } catch (error) {
       toast(`安装失败：${error.message}`, "error", 5e3);
     }
+  }
+  async function fetchOfficialText(path) {
+    const urls = [`${CDN_ROOT}${path}`, `${RAW_ROOT}${path}`];
+    let lastError;
+    for (const url of urls) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (response.ok) return response.text();
+        lastError = new Error(`HTTP ${response.status}`);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw new Error(`官方源不可用（${lastError?.message || "网络请求失败"}）`);
   }
   async function sha256(text) {
     const bytes = new TextEncoder().encode(text);
