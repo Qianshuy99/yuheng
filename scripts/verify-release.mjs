@@ -12,25 +12,30 @@ const check = (condition, message) => {
 	if (!condition) failures.push(message);
 };
 
-const [{ BRAND }, pkg, distManifest, userscript, docs, readme, catalog] = await Promise.all([
+const [{ BRAND }, pkg, distManifest, userscript, docs, readme, pagesWorkflow, catalog] = await Promise.all([
 	import(new URL('../src/brand.js', import.meta.url)),
 	json('package.json'),
 	json('dist/manifest.json'),
 	read('dist/yuheng.user.js'),
 	read('docs/index.html'),
 	read('README.md'),
+	read('.github/workflows/pages.yml'),
 	json('themes/catalog.json'),
 ]);
 
-const installUrl = `https://raw.githubusercontent.com/Qianshuy99/yuheng/main/dist/yuheng.user.js?v=${BRAND.version}`;
+const updateUrl = 'https://qianshuy99.github.io/yuheng/yuheng.user.js';
+const versionedFile = `yuheng-${BRAND.version}.user.js`;
+const installUrl = `https://qianshuy99.github.io/yuheng/${versionedFile}`;
 check(pkg.version === BRAND.version, `package.json=${pkg.version}，品牌版本=${BRAND.version}`);
 check(distManifest.version === BRAND.version, `dist manifest=${distManifest.version}，品牌版本=${BRAND.version}`);
 check(userscript.includes(`// @version     ${BRAND.version}`), 'userscript @version 未同步');
-check(userscript.includes(`// @updateURL   ${installUrl}`), 'userscript @updateURL 未同步');
-check(userscript.includes(`// @downloadURL ${installUrl}`), 'userscript @downloadURL 未同步');
-check(docs.includes(`href="${installUrl}"`), '使用文档安装链接未同步');
+check(userscript.includes(`// @updateURL   ${updateUrl}`), 'userscript @updateURL 未同步');
+check(userscript.includes(`// @downloadURL ${updateUrl}`), 'userscript @downloadURL 未同步');
+check(docs.includes(`href="./${versionedFile}"`), '使用文档安装链接未同步');
 check(docs.includes(`YuHeng v${BRAND.version} · Dubhe Core`), '使用文档页脚版本未同步');
 check(readme.includes(`](${installUrl})`), 'README 安装链接未同步');
+check(pagesWorkflow.includes(`cp dist/yuheng.user.js _site/yuheng.user.js`), 'Pages 缺少稳定更新文件');
+check(pagesWorkflow.includes(`cp dist/yuheng.user.js _site/${versionedFile}`), 'Pages 缺少版本化安装文件');
 
 for (const entry of catalog.themes || []) {
 	check(/^[a-z0-9._-]+\/[a-z0-9._-]+\.theme\.json$/i.test(entry.path || ''), `${entry.id}: path 无效`);

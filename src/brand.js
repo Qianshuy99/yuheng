@@ -3,7 +3,7 @@
 import { ICONS } from './gen/icons.js';
 
 const VERSION = '1.0.3';
-const DOWNLOAD_URL = `https://raw.githubusercontent.com/Qianshuy99/yuheng/main/dist/yuheng.user.js?v=${VERSION}`;
+const DOWNLOAD_URL = 'https://qianshuy99.github.io/yuheng/yuheng.user.js';
 
 /** 现有 logo 是 363×512 的竖构图汉字，缩到 16px 会糊；重做后把这里改成 false。 */
 export const LOGO_IS_PLACEHOLDER = false;
