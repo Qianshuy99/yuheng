@@ -1,8 +1,8 @@
 {
   "file": "miku.theme.json",
   "id": "miku.star",
-  "version": "1.0.1",
-  "bytes": 282174,
-  "gzip": 194103,
-  "sha256": "bd6569429af2c81bcd26cb96d8debf9a91862b14dbebb220ceaabc074d9e28ed"
+  "version": "1.0.2",
+  "bytes": 282091,
+  "gzip": 194124,
+  "sha256": "daa1dfa4192937d7ab0b9d67563c0996ebf0a99fe9cc88b1b3820002b41c93c6"
 }
