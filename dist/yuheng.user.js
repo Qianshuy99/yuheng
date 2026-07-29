@@ -51,7 +51,7 @@
     /** 发布产物的直链：油猴按这个做更新检查，README 的安装按钮也指向它 */
     download: "https://cdn.jsdelivr.net/gh/Qianshuy99/yuheng@main/dist/yuheng.user.js",
     /** 底部署名，见品牌方案第九章 */
-    footer: "YuHeng v1.0.0 · Dubhe Core",
+    footer: "YuHeng v1.0.1 · Dubhe Core",
     menuPrefix: "🌟 玉衡：",
     icons: ICONS
   });

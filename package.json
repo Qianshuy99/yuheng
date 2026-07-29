@@ -1,6 +1,6 @@
 {
   "name": "yuheng",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "description": "玉衡主题助手 — 基于 Dubhe Core 引擎的油猴换肤引擎",
