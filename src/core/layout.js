@@ -27,6 +27,7 @@ function gridRules(selector, grid) {
 }
 
 function layoutCss(themeId, layout) {
+	if (!layout.root || !layout.desktop) return '';
 	const root = `[data-yh-layout-root="${cssEscape(themeId)}"]`;
 	const regions = layout.regions.map((region) =>
 		`${root}>[data-yh-layout-region="${cssEscape(region.id)}"]{grid-area:${region.id}!important;min-width:0;}`,
@@ -35,6 +36,70 @@ function layoutCss(themeId, layout) {
 		? `@media (max-width:${layout.mobile.maxWidth}px){${gridRules(root, layout.mobile)}}`
 		: '';
 	return `${gridRules(root, layout.desktop)}\n${regions}\n${mobile}`;
+}
+
+function mountPortals(themeId, portals) {
+	if (!portals?.length) return () => {};
+	const entries = portals.map((portal) => ({ portal, holder: null, node: null, marker: null }));
+	let stopped = false;
+	let scheduled = false;
+
+	function restore(entry) {
+		if (entry.node) {
+			if (entry.marker?.isConnected) entry.marker.replaceWith(entry.node);
+			else entry.node.remove();
+		}
+		entry.marker?.remove();
+		entry.holder?.remove();
+		entry.holder = null;
+		entry.node = null;
+		entry.marker = null;
+	}
+
+	function portal(entry, source) {
+		if (entry.node === source) return;
+		restore(entry);
+		const holder = document.createElement('div');
+		holder.setAttribute('data-yh-layout-portal', `${themeId}:${entry.portal.id}`);
+		const marker = document.createComment(`yh-layout-portal:${entry.portal.id}`);
+		source.before(marker);
+		(document.body || document.documentElement).append(holder);
+		holder.append(source);
+		entry.holder = holder;
+		entry.node = source;
+		entry.marker = marker;
+	}
+
+	function apply() {
+		scheduled = false;
+		if (stopped) return;
+		for (const entry of entries) {
+			if (window.innerWidth < entry.portal.minWidth) {
+				restore(entry);
+				continue;
+			}
+			const source = document.querySelector(entry.portal.source);
+			if (source && source !== entry.node) portal(entry, source);
+		}
+	}
+
+	function schedule() {
+		if (stopped || scheduled) return;
+		scheduled = true;
+		queueMicrotask(apply);
+	}
+
+	const observer = new MutationObserver(schedule);
+	observer.observe(document.documentElement, { childList: true, subtree: true });
+	window.addEventListener('resize', schedule);
+	apply();
+
+	return () => {
+		stopped = true;
+		observer.disconnect();
+		window.removeEventListener('resize', schedule);
+		for (const entry of entries) restore(entry);
+	};
 }
 
 /**
@@ -51,6 +116,7 @@ export function mountLayout(theme) {
 	let rootPrevious = null;
 	const regionPrevious = new Map();
 	let stopped = false;
+	const unmountPortals = mountPortals(theme.id, layout.portals);
 
 	const clear = () => {
 		dropStyle();
@@ -93,7 +159,7 @@ export function mountLayout(theme) {
 		return true;
 	};
 
-	if (!apply()) {
+	if (layout.root && !apply()) {
 		observer = new MutationObserver(apply);
 		observer.observe(document.documentElement, { childList: true, subtree: true });
 	}
@@ -102,6 +168,7 @@ export function mountLayout(theme) {
 		stopped = true;
 		observer?.disconnect();
 		clear();
+		unmountPortals();
 	};
 }
 

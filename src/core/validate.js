@@ -151,6 +151,17 @@ function cleanLayout(input) {
 	if (!input || typeof input !== 'object' || Array.isArray(input)) {
 		return { ok: false, layout: null, warnings, errors: ['layout must be an object'] };
 	}
+	const portals = cleanPortals(input.portals, errors);
+	const hasGrid = input.root !== undefined || input.regions !== undefined || input.desktop !== undefined || input.mobile !== undefined;
+	if (!hasGrid) {
+		if (!portals.length) errors.push('layout requires a grid or portal');
+		return {
+			ok: errors.length === 0,
+			layout: errors.length ? null : { root: null, regions: [], desktop: null, mobile: null, portals },
+			warnings,
+			errors,
+		};
+	}
 	const root = str(input.root, 160);
 	if (!root) errors.push('layout requires root');
 	else if (!validSelector(root)) errors.push('layout root selector is invalid');
@@ -186,10 +197,40 @@ function cleanLayout(input) {
 	if (!desktop) errors.push('layout requires a valid desktop grid');
 	return {
 		ok: errors.length === 0,
-		layout: errors.length ? null : { root, regions: cleanRegions, desktop, mobile },
+		layout: errors.length ? null : { root, regions: cleanRegions, desktop, mobile, portals },
 		warnings,
 		errors,
 	};
+}
+
+function cleanPortals(input, errors) {
+	if (input === undefined || input === null) return [];
+	if (!Array.isArray(input)) {
+		errors.push('layout portals must be an array');
+		return [];
+	}
+	if (input.length > 4) errors.push('layout supports at most 4 portals');
+	const ids = new Set();
+	const portals = [];
+	for (const item of input.slice(0, 4)) {
+		const id = str(item?.id, 32);
+		const source = str(item?.source, 160);
+		if (!LAYOUT_ID_RE.test(id)) {
+			errors.push(`invalid layout portal id: ${id || '(empty)'}`);
+			continue;
+		}
+		if (ids.has(id)) {
+			errors.push(`duplicate layout portal id: ${id}`);
+			continue;
+		}
+		if (!source || !validSelector(source)) {
+			errors.push(`layout portal ${id} source selector is invalid`);
+			continue;
+		}
+		ids.add(id);
+		portals.push({ id, source, minWidth: Math.max(320, Math.min(4096, Number(item?.minWidth) || 992)) });
+	}
+	return portals;
 }
 
 function validSelector(selector) {

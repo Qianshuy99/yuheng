@@ -2,7 +2,7 @@
 // @name        玉衡主题助手
 // @name:en     YuHeng Skin Engine
 // @namespace   https://github.com/Qianshuy99/yuheng
-// @version     1.0.4
+// @version     1.0.5
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
@@ -32,7 +32,7 @@
   });
 
   // src/brand.js
-  var VERSION = "1.0.4";
+  var VERSION = "1.0.5";
   var DOWNLOAD_URL = "https://qianshuy99.github.io/yuheng/yuheng.user.js";
   var LOGO_IS_PLACEHOLDER = false;
   var BRAND = Object.freeze({
@@ -337,6 +337,7 @@
     return `${selector}{display:grid!important;grid-template-columns:${grid.columns}!important;grid-template-rows:${grid.rows}!important;grid-template-areas:${areas}!important;}`;
   }
   function layoutCss(themeId, layout) {
+    if (!layout.root || !layout.desktop) return "";
     const root = `[data-yh-layout-root="${cssEscape(themeId)}"]`;
     const regions = layout.regions.map(
       (region) => `${root}>[data-yh-layout-region="${cssEscape(region.id)}"]{grid-area:${region.id}!important;min-width:0;}`
@@ -346,6 +347,64 @@
 ${regions}
 ${mobile}`;
   }
+  function mountPortals(themeId, portals) {
+    if (!portals?.length) return () => {
+    };
+    const entries = portals.map((portal2) => ({ portal: portal2, holder: null, node: null, marker: null }));
+    let stopped = false;
+    let scheduled = false;
+    function restore(entry) {
+      if (entry.node) {
+        if (entry.marker?.isConnected) entry.marker.replaceWith(entry.node);
+        else entry.node.remove();
+      }
+      entry.marker?.remove();
+      entry.holder?.remove();
+      entry.holder = null;
+      entry.node = null;
+      entry.marker = null;
+    }
+    function portal(entry, source) {
+      if (entry.node === source) return;
+      restore(entry);
+      const holder = document.createElement("div");
+      holder.setAttribute("data-yh-layout-portal", `${themeId}:${entry.portal.id}`);
+      const marker = document.createComment(`yh-layout-portal:${entry.portal.id}`);
+      source.before(marker);
+      (document.body || document.documentElement).append(holder);
+      holder.append(source);
+      entry.holder = holder;
+      entry.node = source;
+      entry.marker = marker;
+    }
+    function apply() {
+      scheduled = false;
+      if (stopped) return;
+      for (const entry of entries) {
+        if (window.innerWidth < entry.portal.minWidth) {
+          restore(entry);
+          continue;
+        }
+        const source = document.querySelector(entry.portal.source);
+        if (source && source !== entry.node) portal(entry, source);
+      }
+    }
+    function schedule() {
+      if (stopped || scheduled) return;
+      scheduled = true;
+      queueMicrotask(apply);
+    }
+    const observer = new MutationObserver(schedule);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    window.addEventListener("resize", schedule);
+    apply();
+    return () => {
+      stopped = true;
+      observer.disconnect();
+      window.removeEventListener("resize", schedule);
+      for (const entry of entries) restore(entry);
+    };
+  }
   function mountLayout(theme) {
     const layout = theme?.layout;
     if (!layout) return null;
@@ -354,6 +413,7 @@ ${mobile}`;
     let rootPrevious = null;
     const regionPrevious = /* @__PURE__ */ new Map();
     let stopped = false;
+    const unmountPortals = mountPortals(theme.id, layout.portals);
     const clear = () => {
       dropStyle();
       if (root && rootPrevious) {
@@ -392,7 +452,7 @@ ${mobile}`;
       observer = null;
       return true;
     };
-    if (!apply()) {
+    if (layout.root && !apply()) {
       observer = new MutationObserver(apply);
       observer.observe(document.documentElement, { childList: true, subtree: true });
     }
@@ -400,6 +460,7 @@ ${mobile}`;
       stopped = true;
       observer?.disconnect();
       clear();
+      unmountPortals();
     };
   }
 
@@ -1384,6 +1445,17 @@ ${body}
     if (!input || typeof input !== "object" || Array.isArray(input)) {
       return { ok: false, layout: null, warnings, errors: ["layout must be an object"] };
     }
+    const portals = cleanPortals(input.portals, errors);
+    const hasGrid = input.root !== void 0 || input.regions !== void 0 || input.desktop !== void 0 || input.mobile !== void 0;
+    if (!hasGrid) {
+      if (!portals.length) errors.push("layout requires a grid or portal");
+      return {
+        ok: errors.length === 0,
+        layout: errors.length ? null : { root: null, regions: [], desktop: null, mobile: null, portals },
+        warnings,
+        errors
+      };
+    }
     const root = str(input.root, 160);
     if (!root) errors.push("layout requires root");
     else if (!validSelector(root)) errors.push("layout root selector is invalid");
@@ -1419,10 +1491,39 @@ ${body}
     if (!desktop) errors.push("layout requires a valid desktop grid");
     return {
       ok: errors.length === 0,
-      layout: errors.length ? null : { root, regions: cleanRegions, desktop, mobile },
+      layout: errors.length ? null : { root, regions: cleanRegions, desktop, mobile, portals },
       warnings,
       errors
     };
+  }
+  function cleanPortals(input, errors) {
+    if (input === void 0 || input === null) return [];
+    if (!Array.isArray(input)) {
+      errors.push("layout portals must be an array");
+      return [];
+    }
+    if (input.length > 4) errors.push("layout supports at most 4 portals");
+    const ids = /* @__PURE__ */ new Set();
+    const portals = [];
+    for (const item of input.slice(0, 4)) {
+      const id = str(item?.id, 32);
+      const source = str(item?.source, 160);
+      if (!LAYOUT_ID_RE.test(id)) {
+        errors.push(`invalid layout portal id: ${id || "(empty)"}`);
+        continue;
+      }
+      if (ids.has(id)) {
+        errors.push(`duplicate layout portal id: ${id}`);
+        continue;
+      }
+      if (!source || !validSelector(source)) {
+        errors.push(`layout portal ${id} source selector is invalid`);
+        continue;
+      }
+      ids.add(id);
+      portals.push({ id, source, minWidth: Math.max(320, Math.min(4096, Number(item?.minWidth) || 992)) });
+    }
+    return portals;
   }
   function validSelector(selector) {
     try {

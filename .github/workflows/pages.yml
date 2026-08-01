@@ -34,7 +34,7 @@ jobs:
           mkdir -p _site/assets/screenshots
           cp -R docs/. _site/
           cp dist/yuheng.user.js _site/yuheng.user.js
-          cp dist/yuheng.user.js _site/yuheng-1.0.4.user.js
+          cp dist/yuheng.user.js _site/yuheng-1.0.5.user.js
           cp assets/logo.png _site/assets/logo.png
           cp -R assets/screenshots/. _site/assets/screenshots/
 

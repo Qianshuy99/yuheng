@@ -30,6 +30,7 @@
 		</div></header>
 	</div>
 	<main class="App-content"><div id="content">
+		<nav id="portal-source" class="IndexPage-nav sideNav"><ul><li><a href="#inbox">收件箱</a></li></ul></nav>
 		<!-- 撑高文档，好让下面的「滚到底不露壁纸」有东西可滚 -->
 		<div style="height:2400px"></div>
 	</div></main>
@@ -329,6 +330,38 @@ async function runChecks() {
 	check('删除后回落到内置主题',
 		document.documentElement.getAttribute('data-yh-theme') === 'xp.luna',
 		document.documentElement.getAttribute('data-yh-theme') || '(无)');
+	closeDialogs();
+
+	/* --- 6. 声明式门户：保留会被 SPA 路由替换的原生导航节点 --- */
+	panelButton('导入主题')?.click();
+	const portalTextarea = document.querySelector('#yh-shell .yh-dlg textarea');
+	const portalValidate = [...document.querySelectorAll('#yh-shell .yh-dlg-foot .yh-btn')]
+		.find((b) => b.textContent.includes('校验并导入'));
+	const portalSource = document.querySelector('#portal-source');
+	portalTextarea.value = JSON.stringify({
+		...base,
+		id: 'portal.copy',
+		name: 'Portal test',
+		css: 'body{--portal-test:1}',
+		layout: { portals: [{ id: 'primary-nav', source: '#content .IndexPage-nav.sideNav', minWidth: 320 }] },
+	});
+	portalValidate?.click();
+	[...document.querySelectorAll('#yh-shell .yh-dlg-foot .yh-btn')]
+		.find((b) => b.textContent.trim() === '导入')?.click();
+	await new Promise((resolve) => setTimeout(resolve, 0));
+	const portalHost = document.querySelector('[data-yh-layout-portal="portal.copy:primary-nav"]');
+	check('声明式门户迁移原生导航节点', Boolean(portalHost?.contains(portalSource)));
+	// Simulate Flarum replacing the route subtree after a discussion click.
+	document.querySelector('#content').innerHTML = '<div class="DiscussionPage"><nav class="DiscussionPage-nav">scrubber</nav></div>';
+	await new Promise((resolve) => setTimeout(resolve, 0));
+	check('SPA 替换内容区后门户导航保持不变', Boolean(portalHost?.isConnected && portalHost.contains(portalSource)));
+	themeRow('Windows XP')?.click();
+	await new Promise((resolve) => setTimeout(resolve, 0));
+	check('卸载门户主题后不残留门户节点', !document.querySelector('[data-yh-layout-portal]'));
+	const portalRow = themeRow('Portal test');
+	portalRow?.querySelector('.yh-theme-del')?.click();
+	[...document.querySelectorAll('#yh-shell .yh-dlg-foot .yh-btn')]
+		.find((b) => b.textContent.trim() === '删除')?.click();
 	closeDialogs();
 
 	document.getElementById('result').textContent = lines.join('\n');

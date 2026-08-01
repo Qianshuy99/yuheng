@@ -12,10 +12,10 @@
     {
       "id": "gugong.palace",
       "name": "故宫",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": "xiyan",
       "path": "gugong/gugong.theme.json",
-      "sha256": "10c3d808df5983abbf26227383715573750d7f92090b21abda771b3a5f46abbf"
+      "sha256": "7c1406491a90227068112ac26c04f1125514cbedc051ede3a19e9cdae58b3857"
     }
   ]
 }
