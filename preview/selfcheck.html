@@ -27,7 +27,7 @@
 					</ul>
 				</li>
 			</ul></div>
-		</div></div></header>
+		</div></header>
 	</div>
 	<main class="App-content"><div id="content">
 		<!-- 撑高文档，好让下面的「滚到底不露壁纸」有东西可滚 -->
@@ -60,7 +60,7 @@ function check(name, pass, detail) {
 }
 
 function styleIds() {
-	return ['yh-theme-style', 'yh-theme-vars', 'yh-shell-style'].filter((id) => document.getElementById(id));
+	return ['yh-theme-style', 'yh-theme-vars', 'yh-theme-layout', 'yh-shell-style'].filter((id) => document.getElementById(id));
 }
 
 function xpClasses() {
@@ -87,7 +87,7 @@ function closeDialogs() {
 	}
 }
 
-function runChecks() {
+async function runChecks() {
 	const root = document.documentElement;
 
 	/* --- 1. 首次挂载 --- */
@@ -98,6 +98,27 @@ function runChecks() {
 		root.classList.contains('yh-on') && root.classList.contains('yh-theme-xp-luna'),
 		xpClasses().join(' '));
 	check('data-yh-theme = xp.luna', root.getAttribute('data-yh-theme') === 'xp.luna');
+	check('声明式布局样式已注入', Boolean(document.getElementById('yh-theme-layout')));
+	check('布局根与区域已标记',
+		document.querySelector('#app[data-yh-layout-root="xp.luna"]')
+			&& document.querySelector('#drawer[data-yh-layout-region="header"]')
+			&& document.querySelector('.App-content[data-yh-layout-region="content"]'));
+	check('AICue 语义区域已标记',
+		document.querySelector('#app[data-yh-aicue="flarum"][data-yh-aicue-page="index"]')
+			&& document.querySelector('#drawer[data-yh-aicue-region="drawer"]')
+			&& document.querySelector('.App-content[data-yh-aicue-region="content"]')
+			&& document.querySelector('#content[data-yh-aicue-region="page"]')
+			&& document.querySelector('.App-composer[data-yh-aicue-region="composer"]'),
+		`app=${document.querySelector('#app')?.getAttribute('data-yh-aicue')} drawer=${document.querySelector('#drawer')?.getAttribute('data-yh-aicue-region')} content=${document.querySelector('.App-content')?.getAttribute('data-yh-aicue-region')} page=${document.querySelector('#content')?.getAttribute('data-yh-aicue-region')} composer=${document.querySelector('.App-composer')?.getAttribute('data-yh-aicue-region')}`);
+	const appContent = document.querySelector('.App-content');
+	appContent?.classList.add('DiscussionPage');
+	await Promise.resolve();
+	await Promise.resolve();
+	check('AICue 适配器跟随 SPA 页面类型切换',
+		document.querySelector('#app[data-yh-aicue-page="discussion"]'));
+	appContent?.classList.remove('DiscussionPage');
+	await Promise.resolve();
+	await Promise.resolve();
 	check('主题 DOM 已建（chrome/taskbar/desktop）', xpNodes() >= 3, `找到 ${xpNodes()} 个`);
 	check('外壳样式与主题样式分开', Boolean(document.getElementById('yh-shell-style')));
 	check('--header-height 被主题接管',
@@ -165,9 +186,13 @@ function runChecks() {
 
 	check('主题 <style> 已移除', !document.getElementById('yh-theme-style'));
 	check('vars <style> 已移除', !document.getElementById('yh-theme-vars'));
+	check('布局 <style> 已移除', !document.getElementById('yh-theme-layout'));
 	check('外壳 <style> 仍在（不该被带走）', Boolean(document.getElementById('yh-shell-style')));
 	check('root class 已清空', xpClasses().filter((c) => c !== 'yh-on').length === 0, xpClasses().join(' '));
 	check('data-yh-theme 已移除', !root.hasAttribute('data-yh-theme'));
+	check('布局标记已清理',
+		!document.querySelector('[data-yh-layout-root],[data-yh-layout-region]'));
+	check('AICue 语义标记已清理', !document.querySelector('[data-yh-aicue],[data-yh-aicue-region],[data-yh-aicue-page]'));
 	check('主题 DOM 已清空', xpNodes() === 0, `残留 ${xpNodes()} 个`);
 	check('--header-height 已还原',
 		getComputedStyle(root).getPropertyValue('--header-height').trim() !== headerHeightOn);

@@ -1,6 +1,7 @@
 // 样式注入：一个主题对应一个 <style>，卸载时整块移除，不留残余。
 // 主题的 vars 单独注入一块 :root 覆写，方便主题包只改变量不写选择器。
 import { YHLog } from './log.js';
+import { mountLayout } from './layout.js';
 
 const STYLE_ID = 'yh-theme-style';
 const VARS_ID = 'yh-theme-vars';
@@ -10,6 +11,7 @@ const SHELL_ID = 'yh-shell-style';
 let mountedId = null;
 /** 内置主题的 unmount()，卸载时调用来还原它自己加的 DOM/class。 */
 let mountedTeardown = null;
+let mountedLayoutTeardown = null;
 
 function head() {
 	return document.head || document.documentElement;
@@ -68,6 +70,7 @@ export function mountTheme(theme, context = {}) {
 
 	mountedId = theme.id;
 	mountedTeardown = null;
+	mountedLayoutTeardown = mountLayout(theme);
 	if (typeof theme.mount === 'function') {
 		try {
 			mountedTeardown = theme.mount(context) || null;
@@ -84,14 +87,23 @@ export function unmountTheme() {
 	if (!mountedId) return false;
 	const root = document.documentElement;
 	const teardown = mountedTeardown;
+	const layoutTeardown = mountedLayoutTeardown;
 	const id = mountedId;
 	// 先清标记再 teardown：主题的 unmount 里可能读 DOM 尺寸，此时应已回到原样式
 	mountedId = null;
 	mountedTeardown = null;
+	mountedLayoutTeardown = null;
 	dropStyle(STYLE_ID);
 	dropStyle(VARS_ID);
 	root.classList.remove('yh-on', themeClass(id));
 	root.removeAttribute('data-yh-theme');
+	if (typeof layoutTeardown === 'function') {
+		try {
+			layoutTeardown();
+		} catch (err) {
+			YHLog.error(`Layout teardown failed for ${id}: ${err && err.message}`);
+		}
+	}
 	if (typeof teardown === 'function') {
 		try {
 			teardown();

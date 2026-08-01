@@ -16,6 +16,7 @@ export const LIMITS = Object.freeze({
 	maxMatchPatterns: 40,
 	maxVars: 200,
 	maxSettings: 40,
+	maxLayoutRegions: 8,
 });
 
 const BANNED = [
@@ -114,6 +115,10 @@ export function validateTheme(input) {
 	}
 	if (!cleanMatch.length && !errors.length) errors.push('match 里没有任何可用模式');
 
+	const layoutResult = cleanLayout(input.layout);
+	if (!layoutResult.ok) errors.push(...layoutResult.errors);
+	warnings.push(...layoutResult.warnings);
+
 	if (errors.length) return { ok: false, errors };
 
 	const theme = {
@@ -127,12 +132,90 @@ export function validateTheme(input) {
 		css,
 		vars: cleanVars(input.vars, warnings),
 		settings: cleanSettings(input.settings, warnings),
+		layout: layoutResult.layout,
 		/** 标记来源，面板里区分内置与导入，导入包才可删 */
 		source: 'imported',
 		importedAt: new Date().toISOString(),
 	};
 
 	return { ok: true, theme, warnings, hosts: externalHosts(css) };
+}
+
+const LAYOUT_ID_RE = /^[a-z][a-z0-9_-]{0,31}$/i;
+const SAFE_GRID_VALUE_RE = /^[a-zA-Z0-9\s().,%/+*\-[\]]+$/;
+
+function cleanLayout(input) {
+	if (input === undefined || input === null) return { ok: true, layout: null, warnings: [], errors: [] };
+	const errors = [];
+	const warnings = [];
+	if (!input || typeof input !== 'object' || Array.isArray(input)) {
+		return { ok: false, layout: null, warnings, errors: ['layout must be an object'] };
+	}
+	const root = str(input.root, 160);
+	if (!root) errors.push('layout requires root');
+	else if (!validSelector(root)) errors.push('layout root selector is invalid');
+	const regions = Array.isArray(input.regions) ? input.regions : [];
+	if (!regions.length) errors.push('layout requires at least one region');
+	if (regions.length > LIMITS.maxLayoutRegions) errors.push(`layout supports at most ${LIMITS.maxLayoutRegions} regions`);
+	const ids = new Set();
+	const cleanRegions = [];
+	for (const item of regions.slice(0, LIMITS.maxLayoutRegions)) {
+		const id = str(item?.id, 32);
+		const selector = str(item?.selector, 160);
+		if (!LAYOUT_ID_RE.test(id)) {
+			errors.push(`invalid layout region id: ${id || '(empty)'}`);
+			continue;
+		}
+		if (ids.has(id)) {
+			errors.push(`duplicate layout region id: ${id}`);
+			continue;
+		}
+		if (!selector) {
+			errors.push(`layout region ${id} requires selector`);
+			continue;
+		}
+		if (!validSelector(selector)) {
+			errors.push(`layout region ${id} selector is invalid`);
+			continue;
+		}
+		ids.add(id);
+		cleanRegions.push({ id, selector });
+	}
+	const desktop = cleanGrid(input.desktop, 'desktop', ids, errors);
+	const mobile = input.mobile === undefined ? null : cleanGrid(input.mobile, 'mobile', ids, errors, true);
+	if (!desktop) errors.push('layout requires a valid desktop grid');
+	return {
+		ok: errors.length === 0,
+		layout: errors.length ? null : { root, regions: cleanRegions, desktop, mobile },
+		warnings,
+		errors,
+	};
+}
+
+function validSelector(selector) {
+	try {
+		document.createDocumentFragment().querySelector(selector);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+function cleanGrid(input, name, regionIds, errors, mobile = false) {
+	if (!input || typeof input !== 'object' || Array.isArray(input)) {
+		errors.push(`layout ${name} must be an object`);
+		return null;
+	}
+	const columns = str(input.columns, 160);
+	const rows = str(input.rows, 160);
+	const areas = Array.isArray(input.areas) ? input.areas.map((row) => str(row, 160)).filter(Boolean) : [];
+	if (!columns || !SAFE_GRID_VALUE_RE.test(columns)) errors.push(`layout ${name}.columns is invalid`);
+	if (!rows || !SAFE_GRID_VALUE_RE.test(rows)) errors.push(`layout ${name}.rows is invalid`);
+	if (!areas.length || areas.some((row) => !row.split(/\s+/).every((id) => id === '.' || regionIds.has(id)))) {
+		errors.push(`layout ${name}.areas must only contain declared region ids`);
+	}
+	const maxWidth = mobile ? Math.max(320, Math.min(2400, Number(input.maxWidth) || 760)) : null;
+	return columns && rows && areas.length ? { columns, rows, areas, ...(mobile ? { maxWidth } : {}) } : null;
 }
 
 function cleanVars(vars, warnings) {
@@ -216,5 +299,6 @@ export function serializeTheme(theme) {
 		css: typeof theme.css === 'string' ? theme.css : '',
 		vars: { ...(theme.vars || {}) },
 		settings: (theme.settings || []).map((item) => ({ ...item })),
+		layout: theme.layout ? JSON.parse(JSON.stringify(theme.layout)) : undefined,
 	};
 }

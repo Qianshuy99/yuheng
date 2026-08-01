@@ -6,6 +6,7 @@
 // 所有靠 CSS 改的东西（body padding、--header-height）随 <style> 一起消失，不用手动还原。
 import THEME_CSS from './theme.css';
 import { BLISS } from './wallpaper.js';
+import { mountAicueAdapter } from '../../sites/aicue.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const WALLPAPERS = [
@@ -35,6 +36,24 @@ export const xpTheme = {
 		{ key: 'maximized', type: 'bool', label: '窗口最大化', default: true },
 		{ key: 'wallpaper', type: 'select', label: '壁纸', default: 'bliss', options: WALLPAPERS },
 	],
+	layout: {
+		root: '#app',
+		regions: [
+			{ id: 'header', selector: ':scope > #drawer' },
+			{ id: 'content', selector: ':scope > .App-content' },
+		],
+		desktop: {
+			columns: 'minmax(0, 1fr)',
+			rows: 'auto minmax(0, 1fr)',
+			areas: ['header', 'content'],
+		},
+		mobile: {
+			maxWidth: 760,
+			columns: 'minmax(0, 1fr)',
+			rows: 'auto minmax(0, 1fr)',
+			areas: ['header', 'content'],
+		},
+	},
 	source: 'builtin',
 	mount,
 	/** 设置项在面板里改动后由 app 调用；返回 true 表示已就地生效，无需重载。 */
@@ -48,6 +67,7 @@ let live = null;
 
 function mount(ctx) {
 	const root = document.documentElement;
+	const unmountAicueAdapter = mountAicueAdapter();
 	const settings = { boot: true, maximized: true, wallpaper: 'bliss', ...(ctx.settings || {}) };
 	/** 本主题创建的所有节点，teardown 时一把清掉 */
 	const nodes = [];
@@ -577,6 +597,7 @@ function mount(ctx) {
 			clearInterval(timer);
 		}
 		titleObserver?.disconnect();
+		unmountAicueAdapter();
 		for (const node of nodes) node.remove();
 		root.classList.remove('xp-max', 'xp-min', 'xp-booting', ...WALLPAPERS.map((w) => 'xp-wall-' + w.value));
 	};

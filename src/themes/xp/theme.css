@@ -290,6 +290,42 @@ html.yh-theme-xp-luna .sideNav .Dropdown-menu>li.active>a{background:#316ac5!imp
 html.yh-theme-xp-luna .sideNav:after{display:none;}
 html.yh-theme-xp-luna .sideNavOffset{margin-top:12px!important;}
 
+/* AICue adapter surfaces. These markers survive Flarum route changes and let
+ * the theme cover list, discussion, search, tags, notifications and profile
+ * views without assuming their internal component nesting. */
+html.yh-theme-xp-luna [data-yh-aicue-region="page"]{min-width:0;}
+html.yh-theme-xp-luna [data-yh-aicue-region="page-main"]{min-width:0;}
+html.yh-theme-xp-luna [data-yh-aicue-page="search"] [data-yh-aicue-region="page-main"],
+html.yh-theme-xp-luna [data-yh-aicue-page="notifications"] [data-yh-aicue-region="page-main"],
+html.yh-theme-xp-luna [data-yh-aicue-page="user"] [data-yh-aicue-region="page-main"],
+html.yh-theme-xp-luna [data-yh-aicue-page="settings"] [data-yh-aicue-region="page-main"]{
+	border:1px solid #b6b2a2;background:#fff;box-shadow:inset 1px 1px 0 #fff;
+}
+html.yh-theme-xp-luna [data-yh-aicue-page="tags"] .TagTile,
+html.yh-theme-xp-luna [data-yh-aicue-page="tags"] .TagTile-child{
+	border:1px solid #b6c8e0!important;border-radius:0!important;
+	background:linear-gradient(180deg,#f8fbff,#e2ecfa)!important;
+	box-shadow:inset 0 1px 0 #fff;
+}
+html.yh-theme-xp-luna [data-yh-aicue-page="notifications"] .Notification,
+html.yh-theme-xp-luna [data-yh-aicue-page="search"] .SearchResult{
+	border-bottom:1px solid #ece9d8;background:#fff;
+}
+html.yh-theme-xp-luna [data-yh-aicue-page="notifications"] .Notification:hover,
+html.yh-theme-xp-luna [data-yh-aicue-page="search"] .SearchResult:hover{
+	background:#e8f0fe;
+}
+@media (min-width:992px){
+	html.yh-theme-xp-luna [data-yh-aicue-page="discussion"] [data-yh-aicue-region="page-nav"]{
+		width:190px;min-width:190px;
+	}
+}
+@media (max-width:991.98px){
+	html.yh-theme-xp-luna [data-yh-aicue-region="page-nav"]{
+		width:auto!important;min-width:0!important;margin-right:0!important;
+	}
+}
+
 /* ============ 6. 经典控件：按钮 / 输入框 / 下拉 ============ */
 html.yh-theme-xp-luna .Button{
 	border-radius:3px!important;
