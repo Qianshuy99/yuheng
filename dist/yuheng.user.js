@@ -2,7 +2,7 @@
 // @name        玉衡主题助手
 // @name:en     YuHeng Skin Engine
 // @namespace   https://github.com/Qianshuy99/yuheng
-// @version     1.0.5
+// @version     1.0.6
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
@@ -32,7 +32,7 @@
   });
 
   // src/brand.js
-  var VERSION = "1.0.5";
+  var VERSION = "1.0.6";
   var DOWNLOAD_URL = "https://qianshuy99.github.io/yuheng/yuheng.user.js";
   var LOGO_IS_PLACEHOLDER = false;
   var BRAND = Object.freeze({
@@ -54,7 +54,7 @@
     download: DOWNLOAD_URL,
     /** 底部署名，见品牌方案第九章 */
     footer: `YuHeng v${VERSION} · Dubhe Core`,
-    menuPrefix: "🌟 玉衡：",
+    menuPrefix: "玉衡：",
     icons: ICONS
   });
   var PALETTE = Object.freeze({
@@ -3292,8 +3292,265 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
     maximized: "xpw:maximized"
   });
 
+  // src/themes/aurora/theme.css
+  var theme_default2 = 'html.yh-theme-aurora-nebula {\n	--aurora-ink: #090b10;\n	--aurora-panel: #111722;\n	--aurora-panel-2: #171f2b;\n	--aurora-line: rgba(214, 255, 247, 0.16);\n	--aurora-copy: #e9f1ef;\n	--aurora-muted: #8c9b9b;\n	background: var(--aurora-ink);\n	color: var(--aurora-copy);\n}\n\nhtml.yh-theme-aurora-nebula body {\n	background: var(--aurora-ink);\n	color: var(--aurora-copy);\n	font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;\n}\n\nhtml.yh-theme-aurora-nebula::before {\n	content: "";\n	position: fixed;\n	inset: 0;\n	pointer-events: none;\n	z-index: -1;\n	background-color: #090b10;\n}\n\nhtml.yh-theme-aurora-nebula .App {\n	min-height: 100vh;\n	background: transparent;\n}\n\nhtml.yh-theme-aurora-nebula .App-header {\n	position: relative;\n	background: transparent;\n	border-bottom: 1px solid var(--aurora-line);\n	box-shadow: none;\n}\n\nhtml.yh-theme-aurora-nebula .App-header .container {\n	max-width: none;\n	min-height: 76px;\n	padding: 0 8.5vw;\n	background: transparent;\n}\n\nhtml.yh-theme-aurora-nebula .Header-title a,\nhtml.yh-theme-aurora-nebula .Header-controls a,\nhtml.yh-theme-aurora-nebula .Button {\n	color: var(--aurora-copy);\n}\n\nhtml.yh-theme-aurora-nebula .Header-title {\n	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n	font-size: 12px;\n	font-weight: 600;\n	letter-spacing: 0;\n}\n\nhtml.yh-theme-aurora-nebula .Header-controls .Button,\nhtml.yh-theme-aurora-nebula .Header-controls a {\n	font-size: 13px;\n	padding: 8px 10px;\n	border-radius: 4px;\n}\n\nhtml.yh-theme-aurora-nebula .Search-input input,\nhtml.yh-theme-aurora-nebula .FormControl {\n	border: 1px solid var(--aurora-line);\n	border-radius: 4px;\n	background: rgba(17, 23, 34, 0.84);\n	color: var(--aurora-copy);\n	box-shadow: none;\n}\n\nhtml.yh-theme-aurora-nebula .App-content {\n	position: relative;\n	z-index: 1;\n	background: transparent !important;\n}\n\nhtml.yh-theme-aurora-nebula .App-navigation {\n	background: transparent !important;\n	border-bottom-color: var(--aurora-line) !important;\n}\n\nhtml.yh-theme-aurora-nebula .WelcomeHero,\nhtml.yh-theme-aurora-nebula .Hero {\n	min-height: min(47vw, 560px);\n	display: flex;\n	align-items: flex-end;\n	padding: 0 0 8vh;\n	background: transparent !important;\n	border: 0;\n}\n\nhtml.yh-theme-aurora-nebula .WelcomeHero .container,\nhtml.yh-theme-aurora-nebula .Hero .container {\n	width: min(1120px, 83vw);\n	max-width: none;\n	padding: 0;\n}\n\nhtml.yh-theme-aurora-nebula .WelcomeHero h1,\nhtml.yh-theme-aurora-nebula .Hero h1 {\n	max-width: 960px;\n	margin: 0;\n	color: #f1fbf8;\n	font-size: 126px;\n	font-weight: 520;\n	line-height: 0.86;\n	letter-spacing: 0;\n	text-wrap: balance;\n	overflow-wrap: anywhere;\n}\n\nhtml.yh-theme-aurora-nebula .WelcomeHero h1::before,\nhtml.yh-theme-aurora-nebula .Hero h1::before {\n	content: "OPEN SIGNAL / 2026";\n	display: block;\n	margin: 0 0 22px 3px;\n	color: var(--aurora-cyan);\n	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n	font-size: 11px;\n	font-weight: 600;\n	line-height: 1;\n}\n\nhtml.yh-theme-aurora-nebula .Hero-subtitle {\n	max-width: 410px;\n	margin: 26px 0 0 auto;\n	color: var(--aurora-muted);\n	font-size: 15px;\n	line-height: 1.55;\n}\n\nhtml.yh-theme-aurora-nebula #content > .container {\n	width: min(1120px, 83vw);\n	max-width: none;\n	padding: 64px 0 120px;\n}\n\nhtml.yh-theme-aurora-nebula .sideNavContainer {\n	display: grid;\n	grid-template-columns: minmax(176px, 0.34fr) minmax(0, 1fr);\n	gap: clamp(32px, 6vw, 96px);\n}\n\nhtml.yh-theme-aurora-nebula .sideNav {\n	position: sticky;\n	top: 36px;\n	height: fit-content;\n	padding: 0;\n}\n\nhtml.yh-theme-aurora-nebula .sideNav ul,\nhtml.yh-theme-aurora-nebula .IndexPage-toolbar,\nhtml.yh-theme-aurora-nebula .DiscussionList-discussions {\n	margin: 0;\n	padding: 0;\n	list-style: none;\n}\n\nhtml.yh-theme-aurora-nebula .sideNav .Button--primary {\n	width: 100%;\n	min-height: 44px;\n	border: 1px solid var(--aurora-cyan);\n	border-radius: 4px;\n	background: var(--aurora-cyan);\n	color: #07100f;\n	font-weight: 700;\n	box-shadow: none;\n}\n\nhtml.yh-theme-aurora-nebula .sideNav .Dropdown-menu {\n	display: block;\n	position: static;\n	float: none;\n	width: auto;\n	margin-top: 24px;\n	padding: 0;\n	border: 0;\n	border-radius: 0;\n	background: transparent;\n	box-shadow: none;\n}\n\nhtml.yh-theme-aurora-nebula .sideNav .Dropdown-menu a {\n	display: block;\n	padding: 10px 0;\n	border-bottom: 1px solid var(--aurora-line);\n	color: var(--aurora-muted);\n	font-size: 13px;\n}\n\nhtml.yh-theme-aurora-nebula .sideNav .Dropdown-menu .active a,\nhtml.yh-theme-aurora-nebula .sideNav .Dropdown-menu a:hover {\n	color: var(--aurora-copy);\n	background: transparent;\n}\n\nhtml.yh-theme-aurora-nebula .sideNavOffset {\n	margin-left: 0;\n}\n\nhtml.yh-theme-aurora-nebula .IndexPage-toolbar {\n	display: flex;\n	align-items: center;\n	justify-content: space-between;\n	min-height: 54px;\n	margin-bottom: 8px;\n	border-bottom: 1px solid var(--aurora-line);\n}\n\nhtml.yh-theme-aurora-nebula .IndexPage-toolbar .Button {\n	border: 0;\n	border-radius: 4px;\n	background: transparent;\n	box-shadow: none;\n	font-size: 12px;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem {\n	position: relative;\n	margin: 0;\n	border: 0;\n	border-bottom: 1px solid var(--aurora-line);\n	border-radius: 0;\n	background: transparent;\n	box-shadow: none;\n	transition: background-color 180ms ease, transform 180ms ease;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem:hover {\n	background: rgba(100, 231, 209, 0.055);\n	transform: translateX(8px);\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem-content {\n	min-height: 120px;\n	padding: 25px 72px 22px 52px;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem-author {\n	left: 0;\n	top: 26px;\n}\n\nhtml.yh-theme-aurora-nebula .Avatar,\nhtml.yh-theme-aurora-nebula .Avatar img {\n	border-radius: 4px;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem-title {\n	margin: 0 0 10px;\n	color: var(--aurora-copy);\n	font-size: 25px;\n	font-weight: 550;\n	line-height: 1.15;\n	letter-spacing: 0;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem-info,\nhtml.yh-theme-aurora-nebula .DiscussionListItem-info a,\nhtml.yh-theme-aurora-nebula .item-excerpt {\n	color: var(--aurora-muted);\n	font-size: 12px;\n	line-height: 1.5;\n}\n\nhtml.yh-theme-aurora-nebula .TagLabel {\n	border: 1px solid rgba(255, 118, 95, 0.5);\n	border-radius: 3px;\n	background: transparent;\n	color: #ff9a88;\n	font-size: 10px;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionListItem-count {\n	right: 0;\n	top: 25px;\n	min-width: 34px;\n	color: var(--aurora-cyan);\n	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n	font-size: 13px;\n	font-weight: 600;\n	text-align: right;\n}\n\nhtml.yh-theme-aurora-nebula .DiscussionList-loadMore .Button {\n	min-height: 44px;\n	margin-top: 26px;\n	border: 1px solid var(--aurora-line);\n	border-radius: 4px;\n	background: transparent;\n	color: var(--aurora-copy);\n	box-shadow: none;\n}\n\nhtml.yh-theme-aurora-nebula .PostStream,\nhtml.yh-theme-aurora-nebula .DiscussionPage-stream,\nhtml.yh-theme-aurora-nebula .Post {\n	background: transparent;\n}\n\nhtml.yh-theme-aurora-nebula .Post {\n	border: 0;\n	border-bottom: 1px solid var(--aurora-line);\n	border-radius: 0;\n	box-shadow: none;\n}\n\nhtml.yh-theme-aurora-nebula .Post-header,\nhtml.yh-theme-aurora-nebula .Post-body {\n	color: var(--aurora-copy);\n}\n\nhtml.yh-theme-aurora-nebula .Dropdown-menu,\nhtml.yh-theme-aurora-nebula .Modal-content,\nhtml.yh-theme-aurora-nebula .Composer {\n	border: 1px solid var(--aurora-line);\n	border-radius: 6px;\n	background: var(--aurora-panel);\n	box-shadow: 0 18px 60px rgba(0, 0, 0, 0.4);\n}\n\nhtml.yh-theme-aurora-nebula .App-composer {\n	z-index: 101;\n}\n\nhtml.yh-theme-aurora-nebula #site-switcher-container {\n	display: none !important;\n}\n\nhtml.yh-theme-aurora-nebula .Button:hover,\nhtml.yh-theme-aurora-nebula a:hover {\n	color: var(--aurora-cyan);\n}\n\nhtml.yh-theme-aurora-nebula.aurora-paper {\n	--aurora-ink: #11120f;\n	--aurora-panel: #1b1c17;\n	--aurora-panel-2: #23241d;\n	--aurora-line: rgba(255, 245, 222, 0.18);\n	--aurora-copy: #f7f1e4;\n	--aurora-muted: #aaa59a;\n}\n\nhtml.yh-theme-aurora-nebula.aurora-paper::before {\n	background-color: #11120f;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-stage {\n	--aurora-x: 0;\n	--aurora-y: 0;\n	position: fixed;\n	inset: 0;\n	pointer-events: none;\n	z-index: 0;\n	overflow: hidden;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-stage::before,\nhtml.yh-theme-aurora-nebula .aurora-stage::after {\n	content: "";\n	position: absolute;\n	pointer-events: none;\n	border: 1px solid rgba(100, 231, 209, 0.16);\n	border-radius: 50%;\n	transform: translate(calc(var(--aurora-x) * 18px), calc(var(--aurora-y) * 18px));\n}\n\nhtml.yh-theme-aurora-nebula .aurora-stage::before {\n	width: min(52vw, 740px);\n	aspect-ratio: 1;\n	right: -18vw;\n	top: -21vw;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-stage::after {\n	width: min(30vw, 440px);\n	aspect-ratio: 1;\n	left: -12vw;\n	bottom: -13vw;\n	border-color: rgba(255, 118, 95, 0.18);\n	transform: translate(calc(var(--aurora-x) * -14px), calc(var(--aurora-y) * -14px));\n}\n\nhtml.yh-theme-aurora-nebula .aurora-canvas {\n	position: absolute;\n	inset: 0;\n	opacity: 0.78;\n	transform: translate(calc(var(--aurora-x) * 8px), calc(var(--aurora-y) * 8px));\n}\n\nhtml.yh-theme-aurora-nebula .aurora-masthead {\n	position: absolute;\n	left: 4.2vw;\n	top: 49%;\n	display: grid;\n	gap: 8px;\n	color: #dffaf5;\n	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n	font-size: 10px;\n	line-height: 1.2;\n	transform: translateY(-50%);\n}\n\nhtml.yh-theme-aurora-nebula .aurora-masthead p {\n	margin: 0;\n	writing-mode: vertical-rl;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-clock {\n	color: var(--aurora-muted);\n}\n\nhtml.yh-theme-aurora-nebula .aurora-mark {\n	display: grid;\n	grid-template-columns: repeat(3, 5px);\n	gap: 3px;\n	align-items: end;\n	height: 20px;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-mark span {\n	display: block;\n	background: var(--aurora-cyan);\n}\n\nhtml.yh-theme-aurora-nebula .aurora-mark span:nth-child(1) { height: 6px; }\nhtml.yh-theme-aurora-nebula .aurora-mark span:nth-child(2) { height: 18px; }\nhtml.yh-theme-aurora-nebula .aurora-mark span:nth-child(3) { height: 10px; background: var(--aurora-coral); }\n\nhtml.yh-theme-aurora-nebula .aurora-rail {\n	position: absolute;\n	right: 3vw;\n	top: 50%;\n	display: grid;\n	gap: 8px;\n	pointer-events: auto;\n	transform: translateY(-50%);\n}\n\nhtml.yh-theme-aurora-nebula .aurora-tool {\n	display: grid;\n	place-items: center;\n	width: 42px;\n	height: 42px;\n	padding: 0;\n	border: 1px solid var(--aurora-line);\n	border-radius: 4px;\n	background: rgba(9, 11, 16, 0.68);\n	color: var(--aurora-copy);\n	cursor: pointer;\n	transition: border-color 160ms ease, color 160ms ease, background-color 160ms ease;\n	backdrop-filter: blur(12px);\n}\n\nhtml.yh-theme-aurora-nebula .aurora-tool:hover,\nhtml.yh-theme-aurora-nebula .aurora-tool:focus-visible {\n	border-color: var(--aurora-cyan);\n	background: rgba(100, 231, 209, 0.12);\n	color: var(--aurora-cyan);\n	outline: 0;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-tool svg {\n	width: 18px;\n	height: 18px;\n	fill: none;\n	stroke: currentColor;\n	stroke-linecap: round;\n	stroke-linejoin: round;\n	stroke-width: 1.7;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-signal {\n	position: absolute;\n	right: 9vw;\n	bottom: 8vh;\n	display: grid;\n	gap: 6px;\n	width: 168px;\n	color: var(--aurora-muted);\n	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;\n	font-size: 10px;\n	line-height: 1.1;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-signal p,\nhtml.yh-theme-aurora-nebula .aurora-signal strong {\n	margin: 0;\n	font: inherit;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-signal strong {\n	color: var(--aurora-copy);\n	font-size: 32px;\n	font-weight: 500;\n	line-height: 1;\n}\n\nhtml.yh-theme-aurora-nebula .aurora-signal-line {\n	display: block;\n	width: 100%;\n	height: 1px;\n	background: var(--aurora-line);\n}\n\nhtml.yh-theme-aurora-nebula .aurora-jump {\n	position: absolute;\n	left: 50%;\n	bottom: 4vh;\n	pointer-events: auto;\n	transform: translateX(-50%);\n}\n\nhtml.yh-theme-aurora-nebula.aurora-still .aurora-stage,\nhtml.yh-theme-aurora-nebula.aurora-still .aurora-canvas {\n	transform: none;\n}\n\n@media (max-width: 900px) {\n	html.yh-theme-aurora-nebula .App-header .container { padding: 0 7vw; }\n	html.yh-theme-aurora-nebula .WelcomeHero,\n	html.yh-theme-aurora-nebula .Hero { min-height: 440px; }\n	html.yh-theme-aurora-nebula .WelcomeHero h1,\n	html.yh-theme-aurora-nebula .Hero h1 { font-size: 82px; }\n	html.yh-theme-aurora-nebula .WelcomeHero .container,\n	html.yh-theme-aurora-nebula .Hero .container,\n	html.yh-theme-aurora-nebula #content > .container { width: min(86vw, 680px); }\n	html.yh-theme-aurora-nebula .sideNavContainer { grid-template-columns: 1fr; gap: 30px; }\n	html.yh-theme-aurora-nebula .sideNav { position: static; }\n	html.yh-theme-aurora-nebula .sideNav > ul { display: flex; gap: 12px; align-items: center; }\n	html.yh-theme-aurora-nebula .sideNav .Button--primary { width: auto; min-width: 140px; }\n	html.yh-theme-aurora-nebula .sideNav .Dropdown-menu { display: flex; gap: 16px; margin: 0; }\n	html.yh-theme-aurora-nebula .sideNav .Dropdown-menu a { border: 0; padding: 9px 0; }\n	html.yh-theme-aurora-nebula .aurora-masthead { left: 3vw; }\n	html.yh-theme-aurora-nebula .aurora-signal { right: 7vw; }\n}\n\n@media (max-width: 620px) {\n	html.yh-theme-aurora-nebula .App-header .container { min-height: 60px; padding: 0 18px; }\n	html.yh-theme-aurora-nebula .Header-primary { display: none; }\n	html.yh-theme-aurora-nebula .WelcomeHero,\n	html.yh-theme-aurora-nebula .Hero { min-height: 510px; padding-bottom: 62px; }\n	html.yh-theme-aurora-nebula .WelcomeHero .container,\n	html.yh-theme-aurora-nebula .Hero .container,\n	html.yh-theme-aurora-nebula #content > .container { width: calc(100vw - 38px); }\n	html.yh-theme-aurora-nebula .WelcomeHero h1,\n	html.yh-theme-aurora-nebula .Hero h1 { max-width: 100%; font-size: 54px; line-height: 0.9; }\n	html.yh-theme-aurora-nebula .Hero-subtitle { margin-top: 20px; font-size: 14px; }\n	html.yh-theme-aurora-nebula #content > .container { padding-top: 34px; }\n	html.yh-theme-aurora-nebula .sideNav > ul { display: block; }\n	html.yh-theme-aurora-nebula .sideNav .Button--primary { width: 100%; }\n	html.yh-theme-aurora-nebula .sideNav .Dropdown-menu { margin-top: 14px; overflow-x: auto; }\n	html.yh-theme-aurora-nebula .DiscussionListItem-content { min-height: 132px; padding: 21px 42px 20px 44px; }\n	html.yh-theme-aurora-nebula .DiscussionListItem-author { top: 22px; }\n	html.yh-theme-aurora-nebula .DiscussionListItem-title { font-size: 19px; }\n	html.yh-theme-aurora-nebula .DiscussionListItem-count { top: 24px; font-size: 11px; }\n	html.yh-theme-aurora-nebula .aurora-masthead { left: 15px; top: 20%; transform: none; }\n	html.yh-theme-aurora-nebula .aurora-rail { top: auto; right: 15px; bottom: 20px; grid-template-columns: repeat(3, 42px); transform: none; }\n	html.yh-theme-aurora-nebula .aurora-signal { left: 38px; right: auto; bottom: 123px; width: 134px; }\n	html.yh-theme-aurora-nebula .aurora-jump { display: none; }\n	html.yh-theme-aurora-nebula .Search { display: none; }\n}\n\n@media (prefers-reduced-motion: reduce) {\n	html.yh-theme-aurora-nebula .DiscussionListItem,\n	html.yh-theme-aurora-nebula .aurora-tool { transition-duration: 0.01ms; }\n	html.yh-theme-aurora-nebula .DiscussionListItem:hover { transform: none; }\n}\n';
+
+  // src/themes/aurora/index.js
+  var SVG_NS2 = "http://www.w3.org/2000/svg";
+  var ICONS3 = {
+    menu: ["M4 12h16", "M4 6h16", "M4 18h16"],
+    search: ["m21 21-4.35-4.35", "M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"],
+    pen: ["M12 20h9", "M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"],
+    arrow: ["M5 12h14", "m13 6 6 6-6 6"],
+    settings: ["M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z", "M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06-2.35 2.35-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51v.1H11.3v-.1a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06-2.35-2.35.06-.06A1.65 1.65 0 0 0 6.46 15a1.65 1.65 0 0 0-1.51-1h-.1v-3.3h.1a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06 2.35-2.35.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51v-.1h3.3v.1a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06 2.35 2.35-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1h.1V14h-.1a1.65 1.65 0 0 0-1.51 1Z"]
+  };
+  var auroraTheme = {
+    id: "aurora.nebula",
+    name: "Aurora Nebula",
+    version: "1.0.0",
+    author: "YuHeng",
+    description: "A kinetic deep-space reading surface with a live constellation field and a precise editorial forum layout.",
+    match: ["*://aicue.top/*", "*://*.aicue.top/*"],
+    runAt: "start",
+    css: theme_default2,
+    vars: {
+      "--aurora-cyan": "#64e7d1",
+      "--aurora-coral": "#ff765f"
+    },
+    settings: [
+      { key: "motion", type: "bool", label: "Live constellation motion", default: true },
+      {
+        key: "contrast",
+        type: "select",
+        label: "Surface contrast",
+        default: "deep",
+        options: [
+          { value: "deep", label: "Deep space" },
+          { value: "paper", label: "Night paper" }
+        ]
+      }
+    ],
+    source: "builtin",
+    mount: mount2,
+    onSetting(key, value) {
+      return live2?.onSetting(key, value) ?? false;
+    }
+  };
+  var live2 = null;
+  function mount2(ctx) {
+    const root = document.documentElement;
+    const settings = { motion: true, contrast: "deep", ...ctx.settings || {} };
+    const nodes = [];
+    const listeners = [];
+    const unmountAicueAdapter = mountAicueAdapter();
+    let frame = 0;
+    let resizeObserver = null;
+    let pageObserver = null;
+    function own(node) {
+      nodes.push(node);
+      return node;
+    }
+    function on(target, event, handler, options) {
+      target.addEventListener(event, handler, options);
+      listeners.push([target, event, handler, options]);
+    }
+    function applySettings() {
+      root.classList.toggle("aurora-still", settings.motion === false);
+      root.classList.toggle("aurora-paper", settings.contrast === "paper");
+    }
+    function click(selector) {
+      document.querySelector(selector)?.click();
+    }
+    function makeIcon(kind) {
+      const svg = document.createElementNS(SVG_NS2, "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("aria-hidden", "true");
+      for (const d of ICONS3[kind] || []) {
+        const path = document.createElementNS(SVG_NS2, "path");
+        path.setAttribute("d", d);
+        svg.append(path);
+      }
+      return svg;
+    }
+    function iconButton(kind, label, action) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "aurora-tool";
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.append(makeIcon(kind));
+      on(button, "click", action);
+      return button;
+    }
+    function updateReadout() {
+      const app2 = document.querySelector("#app");
+      const page = app2?.getAttribute("data-yh-aicue-page") || "index";
+      stage.dataset.page = page;
+      const count = document.querySelectorAll(".DiscussionListItem, .Post").length;
+      stage.querySelector("[data-aurora-count]").textContent = String(count || 0).padStart(2, "0");
+      stage.querySelector("[data-aurora-page]").textContent = page.toUpperCase();
+    }
+    const stage = own(document.createElement("section"));
+    stage.className = "aurora-stage";
+    stage.setAttribute("aria-label", "Aurora navigation layer");
+    const canvas = document.createElement("canvas");
+    canvas.className = "aurora-canvas";
+    canvas.setAttribute("aria-hidden", "true");
+    const masthead = document.createElement("div");
+    masthead.className = "aurora-masthead";
+    masthead.innerHTML = '<div class="aurora-mark"><span></span><span></span><span></span></div><p>YU HENG / CONSTELLATION</p><p class="aurora-clock">LIVE FIELD</p>';
+    const rail = document.createElement("nav");
+    rail.className = "aurora-rail";
+    rail.setAttribute("aria-label", "Forum actions");
+    rail.append(
+      iconButton("menu", "Open theme controls", () => ctx.openPanel()),
+      iconButton("search", "Search discussions", () => {
+        const input = document.querySelector(".Search-input input, input[type=search]");
+        input?.focus();
+        input?.select?.();
+      }),
+      iconButton("pen", "Start a discussion", () => click(".item-newDiscussion button, .item-newDiscussion a"))
+    );
+    const signal = document.createElement("div");
+    signal.className = "aurora-signal";
+    signal.innerHTML = '<span class="aurora-signal-line"></span><p>ARCHIVE DENSITY</p><strong data-aurora-count>00</strong><p data-aurora-page>INDEX</p>';
+    const jump = iconButton("arrow", "Move to discussions", () => {
+      document.querySelector('.DiscussionList, .PostStream, [data-yh-aicue-region="page-main"]')?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    jump.classList.add("aurora-jump");
+    stage.append(canvas, masthead, rail, signal, jump);
+    (document.body || root).append(stage);
+    const field = createField(canvas, stage, () => settings.motion !== false);
+    const update = () => updateReadout();
+    pageObserver = new MutationObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    });
+    pageObserver.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "data-yh-aicue-page"] });
+    resizeObserver = new ResizeObserver(() => field.resize());
+    resizeObserver.observe(document.documentElement);
+    on(window, "pointermove", (event) => {
+      const x = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
+      const y = event.clientY / Math.max(window.innerHeight, 1) - 0.5;
+      stage.style.setProperty("--aurora-x", x.toFixed(3));
+      stage.style.setProperty("--aurora-y", y.toFixed(3));
+      field.setPointer(event.clientX, event.clientY);
+    }, { passive: true });
+    on(document, "visibilitychange", () => field.setPaused(document.hidden));
+    updateReadout();
+    applySettings();
+    field.start();
+    live2 = {
+      onSetting(key, value) {
+        settings[key] = value;
+        applySettings();
+        field.setActive(settings.motion !== false);
+        return true;
+      }
+    };
+    return () => {
+      live2 = null;
+      cancelAnimationFrame(frame);
+      field.stop();
+      resizeObserver?.disconnect();
+      pageObserver?.disconnect();
+      for (const [target, event, handler, options] of listeners) target.removeEventListener(event, handler, options);
+      unmountAicueAdapter();
+      for (const node of nodes) node.remove();
+      root.classList.remove("aurora-still", "aurora-paper");
+    };
+  }
+  function createField(canvas, stage, getMotion) {
+    const context = canvas.getContext("2d");
+    const points = Array.from({ length: 74 }, (_, index) => ({
+      x: index * 47 % 101 / 100,
+      y: (index * 71 + 29) % 97 / 96,
+      depth: 0.25 + index * 19 % 75 / 100,
+      phase: index * 0.73
+    }));
+    let width = 1;
+    let height = 1;
+    let ratio = 1;
+    let animation = 0;
+    let running = false;
+    let paused = false;
+    let pointer = { x: 0, y: 0 };
+    function resize() {
+      const rect = stage.getBoundingClientRect();
+      width = Math.max(1, rect.width);
+      height = Math.max(1, rect.height);
+      ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+    function draw(time) {
+      if (!running) return;
+      context.clearRect(0, 0, width, height);
+      const motion = getMotion() && !paused;
+      const visible = points.map((point) => {
+        const drift = motion ? Math.sin(time * 24e-5 + point.phase) * 16 * point.depth : 0;
+        return {
+          x: point.x * width + drift + (pointer.x - width / 2) * point.depth * 0.022,
+          y: point.y * height + Math.cos(time * 18e-5 + point.phase) * 11 * point.depth + (pointer.y - height / 2) * point.depth * 0.018,
+          depth: point.depth
+        };
+      });
+      for (let i = 0; i < visible.length; i += 1) {
+        for (let j = i + 1; j < visible.length; j += 1) {
+          const a = visible[i];
+          const b = visible[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 100) {
+            context.beginPath();
+            context.strokeStyle = `rgba(100, 231, 209, ${(1 - dist / 100) * 0.12})`;
+            context.lineWidth = 0.65;
+            context.moveTo(a.x, a.y);
+            context.lineTo(b.x, b.y);
+            context.stroke();
+          }
+        }
+      }
+      for (const point of visible) {
+        context.beginPath();
+        context.fillStyle = point.depth > 0.68 ? "#ff765f" : "#d9fff8";
+        context.globalAlpha = 0.25 + point.depth * 0.7;
+        context.arc(point.x, point.y, 0.7 + point.depth * 1.7, 0, Math.PI * 2);
+        context.fill();
+      }
+      context.globalAlpha = 1;
+      animation = requestAnimationFrame(draw);
+    }
+    return {
+      resize,
+      setPointer(x, y) {
+        pointer = { x, y };
+      },
+      setPaused(value) {
+        paused = value;
+      },
+      setActive() {
+      },
+      start() {
+        if (!running) {
+          running = true;
+          resize();
+          animation = requestAnimationFrame(draw);
+        }
+      },
+      stop() {
+        running = false;
+        cancelAnimationFrame(animation);
+      }
+    };
+  }
+
   // src/app.js
-  var BUILTIN = [xpTheme];
+  var BUILTIN = [auroraTheme, xpTheme];
   function createApp() {
     const config = loadConfig();
     let ball = null;
@@ -3560,7 +3817,7 @@ html.yh-theme-xp-luna .item-newDiscussion .Button{border-radius:3px!important;}
   var hasMenu = typeof GM_registerMenuCommand === "function";
   function quickHasCandidate(packs) {
     const url = location.href;
-    if (themeMatches(xpTheme, url)) return true;
+    if (themeMatches(xpTheme, url) || themeMatches(auroraTheme, url)) return true;
     return packs.some((pack) => themeMatches(pack, url));
   }
   var app = null;

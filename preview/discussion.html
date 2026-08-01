@@ -108,6 +108,16 @@ addEventListener('load', () => setTimeout(() => {
 }, 600));
 </script>
 <script src="./gm-mock.js"></script>
+<script>
+{
+	const config = GM_getValue('yh:config', null) || {};
+	const activeByHost = config.activeByHost || {};
+	if (activeByHost[location.hostname] === undefined) {
+		activeByHost[location.hostname] = 'aurora.nebula';
+		GM_setValue('yh:config', { ...config, activeByHost });
+	}
+}
+</script>
 <script src="./skin.js"></script>
 </body>
 </html>

@@ -48,7 +48,9 @@
 	const config = GM_getValue('yh:config', null) || {};
 	const themeSettings = config.themeSettings || {};
 	themeSettings['xp.luna'] = { ...(themeSettings['xp.luna'] || {}), boot: false };
-	GM_setValue('yh:config', { ...config, themeSettings });
+	const activeByHost = config.activeByHost || {};
+	activeByHost[location.hostname] = 'xp.luna';
+	GM_setValue('yh:config', { ...config, themeSettings, activeByHost });
 })();
 </script>
 <script src="./skin.js"></script>
@@ -284,7 +286,7 @@ async function runChecks() {
 		!(GM_getValue('yh:themes', []) || []).some((p) => p.id === 'xp.luna'),
 		JSON.stringify((GM_getValue('yh:themes', []) || []).map((p) => p.id)));
 	check('内置主题没被顶掉',
-		(document.querySelector('#yh-shell .yh-theme .yh-theme-name')?.textContent || '') === 'Windows XP');
+		(document.querySelector('#yh-shell .yh-theme .yh-theme-name')?.textContent || '') === 'Aurora Nebula');
 	closeDialogs();
 
 	panelButton('导入主题')?.click();
@@ -328,7 +330,7 @@ async function runChecks() {
 	check('删除后 yh:themes 里没有残留',
 		!(GM_getValue('yh:themes', []) || []).some((p) => p.id === 'xp.copy'));
 	check('删除后回落到内置主题',
-		document.documentElement.getAttribute('data-yh-theme') === 'xp.luna',
+		document.documentElement.getAttribute('data-yh-theme') === 'aurora.nebula',
 		document.documentElement.getAttribute('data-yh-theme') || '(无)');
 	closeDialogs();
 

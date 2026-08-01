@@ -9,13 +9,14 @@ import { loadConfig, loadThemes } from './core/store.js';
 import { themeMatches } from './core/registry.js';
 import { createApp } from './app.js';
 import { xpTheme } from './themes/xp/index.js';
+import { auroraTheme } from './themes/aurora/index.js';
 
 const hasMenu = typeof GM_registerMenuCommand === 'function';
 
 /** 只看 match 模式，不做包校验：早退路径上要尽量便宜。 */
 function quickHasCandidate(packs) {
 	const url = location.href;
-	if (themeMatches(xpTheme, url)) return true;
+	if (themeMatches(xpTheme, url) || themeMatches(auroraTheme, url)) return true;
 	return packs.some((pack) => themeMatches(pack, url));
 }
 

@@ -16,9 +16,10 @@ import { openImportDialog, openExportDialog } from './core/ui/import.js';
 import { openOfficialCatalog } from './core/ui/official.js';
 import { validateTheme } from './core/validate.js';
 import { xpTheme, XP_LEGACY_KEYS } from './themes/xp/index.js';
+import { auroraTheme } from './themes/aurora/index.js';
 
 /** 内置主题。导入包在 boot() 里追加注册，所以内置的排在候选列表前面。 */
-const BUILTIN = [xpTheme];
+const BUILTIN = [auroraTheme, xpTheme];
 
 export function createApp() {
 	const config = loadConfig();

@@ -49,7 +49,7 @@
 			// 默认收起，免得盖住主题的菜单栏；hover 展开
 			const title = document.createElement('button');
 			title.type = 'button';
-			title.textContent = '🐵 油猴菜单';
+			title.textContent = '脚本菜单';
 			title.style.cssText = 'background:transparent;color:inherit;border:0;font:inherit;cursor:pointer;padding:2px 6px;';
 			list = document.createElement('div');
 			list.style.display = 'none';

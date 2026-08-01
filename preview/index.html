@@ -122,6 +122,18 @@ for (const toggle of document.querySelectorAll('.Dropdown-toggle')) {
 }
 </script>
 <script src="./gm-mock.js"></script>
+<script>
+// Keep the visual preview focused on the new built-in theme. The self-check
+// fixture deliberately leaves this unset so it can continue exercising XP.
+{
+	const config = GM_getValue('yh:config', null) || {};
+	const activeByHost = config.activeByHost || {};
+	if (activeByHost[location.hostname] === undefined) {
+		activeByHost[location.hostname] = 'aurora.nebula';
+		GM_setValue('yh:config', { ...config, activeByHost });
+	}
+}
+</script>
 <script src="./skin.js"></script>
 <script>
 // 复刻站点自带的悬浮“切换站点”按钮（closed shadow root + fixed 右下角 z-index 99999），

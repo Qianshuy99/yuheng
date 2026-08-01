@@ -2,7 +2,7 @@
 // 任何地方要写「玉衡」「Dubhe Core」或品牌色，都从这里取，不要硬编码。
 import { ICONS } from './gen/icons.js';
 
-const VERSION = '1.0.5';
+const VERSION = '1.0.6';
 const DOWNLOAD_URL = 'https://qianshuy99.github.io/yuheng/yuheng.user.js';
 
 /** 现有 logo 是 363×512 的竖构图汉字，缩到 16px 会糊；重做后把这里改成 false。 */
@@ -27,7 +27,7 @@ export const BRAND = Object.freeze({
 	download: DOWNLOAD_URL,
 	/** 底部署名，见品牌方案第九章 */
 	footer: `YuHeng v${VERSION} · Dubhe Core`,
-	menuPrefix: '🌟 玉衡：',
+	menuPrefix: '玉衡：',
 	icons: ICONS,
 });
 
