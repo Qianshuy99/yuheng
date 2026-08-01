@@ -8,6 +8,14 @@
       "author": "xiyan",
       "path": "miku/miku.theme.json",
       "sha256": "bc8454e946715229e0e2316d8fc7d8f9ca702ef36f65403daab00ce37aadae77"
+    },
+    {
+      "id": "gugong.palace",
+      "name": "故宫",
+      "version": "1.2.0",
+      "author": "xiyan",
+      "path": "gugong/gugong.theme.json",
+      "sha256": "10c3d808df5983abbf26227383715573750d7f92090b21abda771b3a5f46abbf"
     }
   ]
 }

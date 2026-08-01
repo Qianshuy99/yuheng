@@ -2,7 +2,7 @@
 // @name        玉衡主题助手
 // @name:en     YuHeng Skin Engine
 // @namespace   https://github.com/Qianshuy99/yuheng
-// @version     1.0.3
+// @version     1.0.4
 // @description 玉衡焕新，指尖星辰。（引擎：Dubhe Core）
 // @author      Qianshuy99
 // @homepageURL https://github.com/Qianshuy99/yuheng
@@ -32,7 +32,7 @@
   });
 
   // src/brand.js
-  var VERSION = "1.0.3";
+  var VERSION = "1.0.4";
   var DOWNLOAD_URL = "https://qianshuy99.github.io/yuheng/yuheng.user.js";
   var LOGO_IS_PLACEHOLDER = false;
   var BRAND = Object.freeze({

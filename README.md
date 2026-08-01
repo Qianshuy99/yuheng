@@ -10,7 +10,7 @@
 
 玉衡面板中的“官方主题库”固定读取本仓库 [`themes/catalog.json`](themes/catalog.json)，只安装该目录登记且位于同一 GitHub 仓库下的纯 CSS 主题包。下载后的包仍须通过本地安全校验；它与手工导入的包一样可删除。
 
-[![安装脚本](https://img.shields.io/badge/Install-Userscript-A8CCC0?style=for-the-badge)](https://qianshuy99.github.io/yuheng/yuheng-1.0.3.user.js)
+[![安装脚本](https://img.shields.io/badge/Install-Userscript-A8CCC0?style=for-the-badge)](https://qianshuy99.github.io/yuheng/yuheng-1.0.4.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-59636d?style=for-the-badge)](LICENSE)
 [![使用说明](https://img.shields.io/badge/Docs-GitHub%20Pages-3F6E60?style=for-the-badge)](https://qianshuy99.github.io/yuheng/)
 
@@ -39,7 +39,7 @@
 1. 浏览器装 [Tampermonkey](https://www.tampermonkey.net/)（或 Violentmonkey）。
 2. 点上面的安装按钮，或直接打开
    [dist/yuheng.user.js](dist/yuheng.user.js) 的
-   [发布链接](https://qianshuy99.github.io/yuheng/yuheng-1.0.3.user.js)。
+   [发布链接](https://qianshuy99.github.io/yuheng/yuheng-1.0.4.user.js)。
 3. 访问 [aicue.top](https://www.aicue.top/) 或其匹配子站点；右侧会出现青瓷绿的悬浮球。点开面板后即可选择主题。
 
 `Ctrl+Alt+X` 可快速启用或关闭 XP 主题；油猴菜单也提供主题开关、开机动画与壁纸命令。未注册主题的网站不会显示悬浮球，也不会修改页面。
